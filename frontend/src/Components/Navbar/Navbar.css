@@ -1,0 +1,134 @@
+header{
+    display: flex ;
+    height: 100px;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-shadow: 5px 0 20px #585a5c;
+    background-color: #ffffff;
+    
+}
+
+.logo_container{
+    margin-left: 4%;
+    align-items: center;
+}
+
+.usman_logo{
+    height: 60px;
+    border-radius: 100px;
+}
+
+.nav_bar{
+    display: flex;
+    width: 500px;
+    justify-content: space-between;
+    align-items: center;
+}
+.nav_bar a{
+    font-size: 14px;
+    color: #0e0d11;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 38px 0;
+    text-decoration: none;
+
+}
+.nav_bar a sup{
+    color: #ff3f6c;
+    font-size: 10px;
+}
+
+.action_bar{
+    display: flex;
+    min-width: 150px;
+    justify-content: space-between;
+    margin-right: 2%;
+    font-size: 25px;
+    
+}
+.action_bar a{
+    color: #595c6d;
+}
+.nav_bar a:hover{
+    border-bottom: 4px solid #ff3f6c;
+    
+}
+
+.search_bar{
+    height: 40px;
+    width: 400px;
+    margin-right: 2%;
+    
+    
+}
+.search_input{
+    background-color: #f5f5f6;
+    color: #696e79;
+    width: 100%;
+    height: 40px;
+    border-radius: 0 5px 5px 0;
+    border: none;
+    padding-left: 40px;
+}
+.icon{
+    position: absolute;
+    margin-top: 10px;
+    margin-left: 10px;
+    color: #282c3f;
+}
+.user:hover{
+    color: #ff3f6c;
+}
+.whish:hover{
+    color: #ff3f6c;
+}
+.shop:hover{
+    color: #ff3f6c;
+}
+.cart-item-count{
+    white-space: nowrap;
+    text-align: center;
+    line-height: 18px;
+    padding: 0 6px;
+    height: 18px;
+    width: 10px;
+    background: #ff3f6c;
+    position: relative;
+    border-radius: 50%;
+    font-size: 12px;
+    color: #fff;
+    left: -27px;
+    top: -8px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.logout:hover{
+    color: #ff3f6c;
+}
+.search-results {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    width: 200px;
+    text-decoration: none;
+    
+  }
+  .search-item{
+    text-decoration: none;
+    color: #585a5c;
+  }
+  
+  .search-result-item {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    
+  }
+  
+  .search-result-item:hover {
+    background-color: #f1f1f1;
+  }
+  
