@@ -6,12 +6,13 @@ const AdminOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(true); // Added loading state
   const token = localStorage.getItem("auth-token");
-  const API_URL = "http://localhost:4000/api/orders"; // Defined API URL
+  const API_URL = "http://localhost:4000/api/orders"; 
+  
 
   const fetchOrders = async () => {
     try {
       setLoading(true); 
-      
+
      
       const res = await axios.get(API_URL, {
         headers: { Authorization: `Bearer ${token}` },
