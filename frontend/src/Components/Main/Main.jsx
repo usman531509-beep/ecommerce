@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import main_img from "../Assests/main_img.png";
 import hand_icon from "../Assests/hand_icon.png";
+import main_img1 from "../Assests/main_img1.png";
 import { Link } from "react-router-dom";
 
 const Main = () => {
@@ -116,12 +117,12 @@ const Main = () => {
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: "easeOut", easeIn: 0.2 }}
           viewport={{ once: true }}
           className="flex-1 flex justify-center z-10 max-w-[550px]"
         >
           <motion.img
-            src={main_img}
+            src={main_img1}
             alt="main"
             className="w-[80%] sm:w-[70%] md:w-[75%] max-w-[450px] object-contain drop-shadow-md"
             animate={{
