@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
-// Recharts imports hata diye gaye hain kyunki yeh library environment mein available nahi hai.
+
 
 const AdminReports = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("auth-token");
-  const API_URL = "http://localhost:4000/api/orders"; // Assuming this endpoint gives all orders
+  const API_URL = "http://localhost:4000/api/orders"; 
 
   const fetchOrders = async () => {
     try {
@@ -158,7 +158,7 @@ const AdminReports = () => {
         📈 Admin Sales Reporting Dashboard
       </h2>
 
-      {/* 1. Key Metrics Cards (Updated layout to include Total Orders) */}
+     
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {metrics.map((metric, index) => (
             <div 

@@ -1,38 +1,38 @@
 import React, { useEffect, useState, useRef } from "react";
   import axios from "axios";
   
-  // Custom Icon Imports (using Lucide icons as placeholders, assuming availability or using simple text)
+  
   const BoldIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8V4m0 0a4 4 0 014 4h-4m0 0a4 4 0 00-4 4v0a4 4 0 004 4m0 0a4 4 0 004 4v0a4 4 0 00-4 4m0 0V8"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12h-3"></path></svg>;
   const ItalicIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20h4m-4 0h-4m4-16h4m0 0h-4m-2 16l-2-16m6 16l2-16"></path></svg>;
   const ListIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>;
 
-  // --- Rich Text Editor Component ---
+  
   const RichTextEditor = ({ value, onChange, placeholder }) => {
     const editorRef = useRef(null);
 
-    // Sync state to the contentEditable div only when the value prop changes (e.g., on editProduct load)
+    
     useEffect(() => {
         if (editorRef.current && editorRef.current.innerHTML !== value) {
             editorRef.current.innerHTML = value || '';
         }
     }, [value]);
 
-    // Handle input change and update the parent form state (HTML content)
+  
     const handleInput = () => {
         if (editorRef.current) {
             onChange(editorRef.current.innerHTML);
         }
     };
 
-    // Apply formatting commands
+   
     const applyFormat = (command, value = null) => {
         document.execCommand(command, false, value);
-        // Ensure the change is reflected in the parent state immediately
+
         handleInput(); 
-        editorRef.current.focus(); // Keep focus after command
+        editorRef.current.focus(); 
     };
     
-    // Prevent default form submission on button clicks inside the editor
+    
     const handleButtonClick = (e, command) => {
         e.preventDefault();
         applyFormat(command);
@@ -42,7 +42,7 @@ import React, { useEffect, useState, useRef } from "react";
         <div className="col-span-full">
             <h3 className="font-semibold mb-2">Description Editor</h3>
             
-            {/* Toolbar */}
+          
             <div className="flex space-x-2 p-2 bg-gray-100 border border-b-0 rounded-t-lg">
                 <button
                     type="button"
@@ -83,7 +83,7 @@ import React, { useEffect, useState, useRef } from "react";
         </div>
     );
   };
-  // --- End of Rich Text Editor Component ---
+
 
 
   const ProductManagement = () => {
@@ -93,7 +93,7 @@ import React, { useEffect, useState, useRef } from "react";
 
     const [form, setForm] = useState({
       name: "",
-      description: "", // Now holds HTML/Rich Text content
+      description: "", 
       price: "",
       old_price: "",
       category: "",
@@ -118,15 +118,15 @@ import React, { useEffect, useState, useRef } from "react";
 
     const [images, setImages] = useState([]);
     const [editingProduct, setEditingProduct] = useState(null);
-    const [message, setMessage] = useState(null); // For custom alerts/messages
+    const [message, setMessage] = useState(null); 
 
-    // Helper to display custom message
+   
     const displayMessage = (text, type = 'success') => {
         setMessage({ text, type });
         setTimeout(() => setMessage(null), 5000);
     };
 
-    //Fetch all products
+   
     const fetchProducts = async () => {
       try {
         const res = await axios.get("http://localhost:4000/api/products");
@@ -215,18 +215,18 @@ import React, { useEffect, useState, useRef } from "react";
       try {
         const formData = new FormData();
 
-        // append normal fields
+        
         Object.entries(form).forEach(([key, value]) => {
           if (Array.isArray(value)) {
-            // Arrays (variations, colors, sizes) are sent as JSON strings
+            
             formData.append(key, JSON.stringify(value));
           } else {
-            // The description field (HTML string) is also appended here
+            
             formData.append(key, value);
           }
         });
 
-        // append image files
+     
         images.forEach((file) => formData.append("images", file));
 
         const config = {
@@ -274,7 +274,7 @@ import React, { useEffect, useState, useRef } from "react";
 
     // Delete Product
     const deleteProduct = async (id) => {
-      // Custom confirmation modal (replacing window.confirm)
+      
       if (!window.confirm("Are you sure you want to delete this product?")) return;
       
       try {
@@ -295,7 +295,7 @@ import React, { useEffect, useState, useRef } from "react";
 
       setForm({
         ...product,
-        // Ensure description is an empty string if null/undefined for RTE
+
         description: product.description || "", 
         category: product.category?._id || product.category,
         colors: product.colors || [],
@@ -308,7 +308,7 @@ import React, { useEffect, useState, useRef } from "react";
 
     return (
       <div className="p-4 sm:p-6 max-w-7xl mx-auto">
-        {/* Custom Message/Alert Box */}
+        
         {message && (
             <div className={`p-3 mb-4 rounded-lg text-white font-semibold shadow-lg ${message.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`}>
                 {message.text}
@@ -400,7 +400,7 @@ import React, { useEffect, useState, useRef } from "react";
             </label>
           </div>
 
-          {/* DESCRIPTION RICH TEXT EDITOR (Replaced textarea) */}
+         
           <RichTextEditor
             value={form.description}
             onChange={handleDescriptionChange}
@@ -487,7 +487,7 @@ import React, { useEffect, useState, useRef } from "react";
                 <span className="font-medium text-sm text-gray-700 w-full mb-1">
                     {editingProduct ? 'Current/New Images:' : 'Selected New Images:'}
                 </span>
-                {/* Display existing images if editing */}
+               
                 {editingProduct && editingProduct.images && editingProduct.images.map((imgUrl, i) => (
                     <p
                         key={`existing-${i}`}
@@ -496,7 +496,7 @@ import React, { useEffect, useState, useRef } from "react";
                         Existing Image {i + 1}
                     </p>
                 ))}
-                {/* Display newly selected images */}
+            
                 {images.map((file, i) => (
                   <p
                     key={`new-${i}`}

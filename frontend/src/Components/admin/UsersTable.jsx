@@ -7,14 +7,14 @@ const UsersTable = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // NOTE: Authentication token is required for this endpoint
+  
   const token = localStorage.getItem("auth-token");
 
-  // Fetch users from backend
+  
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      // Ensure token exists before attempting API call
+     
       if (!token) {
         throw new Error("Authentication token not found.");
       }
@@ -26,7 +26,7 @@ const UsersTable = () => {
       setLoading(false);
     } catch (err) {
       console.error("Error fetching users:", err);
-      // Display a friendly error message to the user
+     
       setError(err.response?.data?.message || "Failed to fetch users. Check console for details.");
       setLoading(false);
     }
@@ -69,7 +69,7 @@ const UsersTable = () => {
       </h2>
 
       {users.length > 0 ? (
-        // Added overflow-x-auto to the wrapper for horizontal scroll on tiny screens
+     
         <div className="overflow-x-auto">
           <table className="min-w-full border-collapse text-sm sm:text-base">
             <thead className="bg-red-500 text-white">
@@ -77,7 +77,7 @@ const UsersTable = () => {
                 <th className="p-3 rounded-tl-xl whitespace-nowrap">Name</th>
                 <th className="p-3 whitespace-nowrap">Email</th>
                 <th className="p-3 whitespace-nowrap">Role</th>
-                {/* Hiding 'Joined' column on small screens (less than sm breakpoint) */}
+               
                 <th className="p-3 hidden sm:table-cell rounded-tr-xl whitespace-nowrap">Joined</th>
               </tr>
             </thead>
@@ -85,7 +85,7 @@ const UsersTable = () => {
               {users.map((user) => (
                 <motion.tr
                   key={user._id}
-                  whileHover={{ backgroundColor: "#fef2f2" }} // Light red hover
+                  whileHover={{ backgroundColor: "#fef2f2" }} 
                   className="border-b last:border-none transition duration-150"
                 >
                   <td className="p-3 font-medium text-gray-800 whitespace-nowrap">{user.name}</td>
@@ -101,7 +101,7 @@ const UsersTable = () => {
                       </span>
                     )}
                   </td>
-                  {/* Hiding 'Joined' data cell on small screens */}
+                 
                   <td className="p-3 text-gray-500 hidden sm:table-cell whitespace-nowrap">
                     {new Date(user.createdAt).toLocaleDateString()}
                   </td>

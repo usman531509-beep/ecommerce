@@ -4,7 +4,7 @@ import axios from "axios";
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [loading, setLoading] = useState(true); // Added loading state
+  const [loading, setLoading] = useState(true); 
   const token = localStorage.getItem("auth-token");
   const API_URL = "http://localhost:4000/api/orders"; 
   
@@ -22,7 +22,7 @@ const AdminOrders = () => {
       console.error("Error fetching orders:", error);
      
     } finally {
-        setLoading(false); // Stop loading
+        setLoading(false); 
     }
   };
 
@@ -30,7 +30,7 @@ const AdminOrders = () => {
     fetchOrders();
   }, []);
 
-  // Function to determine badge color based on status (Updated with borders for better look)
+  
   const getStatusClasses = (status) => {
     switch (status) {
       case "Delivered":
@@ -48,7 +48,7 @@ const AdminOrders = () => {
     }
   };
 
-  // Function to handle status update
+  
   const handleStatusUpdate = async (orderId, newStatus) => {
     if (!token) {
         alert("Authentication token missing.");
@@ -59,16 +59,16 @@ const AdminOrders = () => {
             { status: newStatus },
             { headers: { Authorization: `Bearer ${token}` } }
         );
-        // Refresh the orders list and update the modal if it's open
+       
         fetchOrders(); 
         if (selectedOrder && selectedOrder._id === orderId) {
             setSelectedOrder(prev => ({ ...prev, status: newStatus }));
         }
-        // NOTE: Using custom modal/toast instead of alert in production
+        
         alert(`Order ${orderId.slice(-6)} status updated to ${newStatus}.`);
     } catch (error) {
         console.error("Error updating status:", error);
-        // NOTE: Using custom modal/toast instead of alert in production
+      
         alert("Failed to update order status.");
     }
   };
@@ -82,20 +82,20 @@ const AdminOrders = () => {
       {loading && <p className="text-center text-red-600 font-semibold mt-8">Orders data load ho raha hai...</p>}
 
       {/* Orders Table Container - Ensures horizontal scroll on small screens */}
-      {!loading && ( // Show table only when not loading
+      {!loading && ( 
         <div className="overflow-x-auto bg-white shadow-xl rounded-xl">
           <table className="min-w-full text-left text-sm">
             <thead className="bg-red-600 text-white">
               <tr>
-                {/* --- NEW: Serial Number Column --- */}
+            
                 <th className="py-3 px-4 rounded-tl-xl text-xs sm:text-sm">S. No.</th>
-                {/* Responsive column hiding: Phone hidden on small screens */}
+              
                 <th className="py-3 px-4 text-xs sm:text-sm">Customer</th>
                 <th className="py-3 px-4 hidden md:table-cell text-xs sm:text-sm">Phone</th>
                 <th className="py-3 px-4 text-xs sm:text-sm whitespace-nowrap">Total Price</th>
                 <th className="py-3 px-4 hidden sm:table-cell text-xs sm:text-sm">Payment</th>
                 <th className="py-3 px-4 text-xs sm:text-sm">Status</th>
-                {/* Date is now fully visible in the table on all screens */}
+     
                 <th className="py-3 px-4 text-xs sm:text-sm whitespace-nowrap">Date</th>
                 <th className="py-3 px-4 rounded-tr-xl text-center text-xs sm:text-sm">Action</th>
               </tr>
@@ -103,7 +103,7 @@ const AdminOrders = () => {
             <tbody>
               {orders.length === 0 ? (
                 <tr>
-                  {/* colSpan updated from 7 to 8 */}
+                  
                   <td colSpan="8" className="p-4 text-center text-gray-500">
                     No orders found.
                   </td>
@@ -114,7 +114,7 @@ const AdminOrders = () => {
                     key={order._id}
                     className="border-b last:border-b-0 hover:bg-red-50 transition"
                   >
-                    {/* --- NEW: Serial Number Cell --- */}
+                    
                     <td className="py-3 px-4 text-gray-700 font-medium">{index + 1}</td>
                     <td className="py-3 px-4 text-gray-700 font-medium whitespace-nowrap">
                       {order.customerInfo?.name}
@@ -130,7 +130,7 @@ const AdminOrders = () => {
                     </td>
                     <td className="py-3 px-4">
                       <span
-                        // Added border class for the badge
+                      
                         className={`text-xs font-semibold px-2 py-1 rounded-full border ${getStatusClasses(
                           order.status
                         )}`}
@@ -138,7 +138,7 @@ const AdminOrders = () => {
                         {order.status}
                       </span>
                     </td>
-                    {/* Date is now fully visible in the table on all screens */}
+                    
                     <td className="py-3 px-4 text-gray-500 whitespace-nowrap">
                       {new Date(order.createdAt).toLocaleDateString()}
                     </td>
@@ -158,10 +158,10 @@ const AdminOrders = () => {
         </div>
       )}
 
-      {/* Modal for Order Details - Responsive design */}
+   
       {selectedOrder && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center p-4 z-50">
-          {/* Modal Card: Max width on desktop, scales down gracefully on mobile */}
+          
           <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto p-6 relative">
             <button
               className="absolute top-4 right-4 text-gray-500 hover:text-red-600 text-3xl transition"
@@ -174,7 +174,7 @@ const AdminOrders = () => {
               🧾 Order #{selectedOrder._id?.slice(-6)} Details
             </h3>
 
-            {/* General Info Grid */}
+       
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-sm">
                 <div className="p-3 border rounded-lg bg-gray-50">
                     <p className="font-semibold text-gray-700 mb-1">Customer Info</p>
@@ -205,7 +205,7 @@ const AdminOrders = () => {
               </p>
             </div>
 
-            {/* Status Update Dropdown */}
+         
             <div className="mb-6 p-3 border border-yellow-400 rounded-lg bg-yellow-50">
                 <p className="font-semibold text-gray-700 mb-2">Update Status:</p>
                 <select
@@ -225,16 +225,16 @@ const AdminOrders = () => {
               {selectedOrder.orderItems.map((item, index) => (
                 <div key={index} className="py-2 flex items-center gap-3 border-b last:border-b-0">
                   <img
-                    src={item.image || "https://placehold.co/64x64/f0f0f0/999?text=Item"} // Added placeholder
+                    src={item.image || "https://placehold.co/64x64/f0f0f0/999?text=Item"} 
                     alt={item.name}
                     className="w-14 h-14 object-cover rounded-lg border flex-shrink-0"
-                    // Fallback in case image fails to load (optional in this context, but good practice)
+              
                     onError={(e) => { e.target.onerror = null; e.target.src="https://placehold.co/64x64/f0f0f0/999?text=Item"; }} 
                   />
                   <div className="min-w-0 flex-1">
                     <p className="font-medium text-gray-800 truncate">{item.name}</p>
                     
-                    {/* --- UPDATED: Size and Color Display --- */}
+                    
                     <p className="text-sm text-gray-500">
                         Qty: {item.qty} × Rs {item.price}
                     </p>
@@ -248,7 +248,7 @@ const AdminOrders = () => {
                             )}
                         </div>
                     )}
-                    {/* ------------------------------------ */}
+                   
 
                     {item.variation && <span className="ml-2 italic text-xs">({item.variation})</span>}
                   </div>

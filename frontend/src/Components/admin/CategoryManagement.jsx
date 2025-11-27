@@ -75,7 +75,7 @@ const CategoryManagement = () => {
 
   // Delete category
   const handleDelete = async (id) => {
-    // NOTE: Replace window.confirm with a custom modal UI in a production environment
+   
     if (!window.confirm("Are you sure you want to delete this category?")) return;
     setLoading(true);
     try {
@@ -90,7 +90,7 @@ const CategoryManagement = () => {
     }
   };
 
-  // Function to reset form when cancel is clicked
+  
   const handleCancelEdit = () => {
     setEditingCategory(null);
     setName("");
@@ -98,7 +98,7 @@ const CategoryManagement = () => {
   };
 
   return (
-    // Removed background gradient and min-h-screen
+    
     <div className="p-4 sm:p-6 font-sans">
       <div className="max-w-full xl:max-w-[1400px] mx-auto bg-white rounded-xl shadow-2xl p-6 sm:p-8">
         <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-6 text-center">
@@ -111,10 +111,10 @@ const CategoryManagement = () => {
           </div>
         )}
 
-        {/* Form Section - Responsive Grid */}
+        
         <form
           onSubmit={handleSubmit}
-          // Grid layout: stacks on mobile, splits into 2 columns on medium screens
+      
           className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"
         >
           <input
@@ -122,7 +122,7 @@ const CategoryManagement = () => {
             placeholder="Category Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            // Inputs take full width on mobile, half width on md+
+          
             className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-400 outline-none transition"
             required
           />
@@ -131,11 +131,11 @@ const CategoryManagement = () => {
             placeholder="Description (Optional)"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            // Inputs take full width on mobile, half width on md+
+          
             className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-red-400 outline-none transition"
           />
 
-          {/* Buttons: Full width container, flex row on sm+ */}
+         
           <div className="col-span-full flex flex-col sm:flex-row gap-3">
             <button
               type="submit"
@@ -158,14 +158,14 @@ const CategoryManagement = () => {
           </div>
         </form>
 
-        {/* Categories Table - Responsive and Scrollable */}
+      
         <div className="overflow-x-auto shadow-inner rounded-xl">
           <table className="w-full border-separate border-spacing-0 text-left text-sm">
             <thead className="bg-red-500 text-white sticky top-0">
               <tr>
-                {/* Adjust padding for mobile vs desktop */}
+            
                 <th className="py-3 px-4 text-left rounded-tl-xl w-1/4">Category Name</th>
-                {/* Hide Description on very small screens for better fit */}
+            
                 <th className="py-3 px-4 text-left hidden sm:table-cell w-1/3">Description</th>
                 <th className="py-3 px-4 text-center rounded-tr-xl w-auto">Actions</th>
               </tr>
@@ -183,7 +183,7 @@ const CategoryManagement = () => {
                     {cat.description || "—"}
                   </td>
                   <td className="py-3 px-4 text-center whitespace-nowrap">
-                    {/* Compact buttons for mobile */}
+                 
                     <button
                       onClick={() => handleEdit(cat)}
                       className="bg-yellow-500 text-white font-medium px-3 py-1 rounded-full text-xs sm:text-sm mr-2 hover:bg-yellow-600 transition transform hover:scale-105"
