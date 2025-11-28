@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // useNavigate hook is necessary
+
 import ProductManagement from "../Components/admin/ProductManagement.jsx";
 import UsersTable from "../Components/admin/UsersTable.jsx";
 import CategoryManagement from "../Components/admin/CategoryManagement.jsx";
 import AdminOrders from "../Components/admin/AdminOrders.jsx";
 import AdminReviewManagement from "../Components/admin/ReviewsManagement.jsx";
 import AdminReports from "../Components/admin/Reports.jsx";
+import AdminContactManagement from "../Components/admin/ContactManagement.jsx";
 
 const AdminPanel = () => {
+  const navigate = useNavigate(); 
+
   const [activeSection, setActiveSection] = useState("reports");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768); 
 
   
   useEffect(() => {
@@ -25,18 +30,29 @@ const AdminPanel = () => {
     if (isMobile) setIsSidebarOpen(false); // auto close on mobile
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("auth-token");
+    localStorage.removeItem("user");
+    navigate("/loginPage"); 
+  };
+
+  // Assuming header height is roughly p-4 which is approx 4 units/1rem/16px
+  // Let's use h-[56px] for the header height or Tailwind's h-14/h-16
+  const mobileHeaderHeight = 'h-[56px]'; // Custom height for clarity
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row relative">
+    // Parent container now has flex-row on desktop and takes up full screen height
+    <div className="min-h-screen bg-gray-50 flex flex-col md:flex-row relative md:h-screen"> 
       
-      {/* 1. Mobile Header: z-50 rakhein. (This is already good) */}
-      <header className="md:hidden bg-[#ff4141] text-white flex justify-between items-center px-4 py-3 shadow-md sticky top-0 z-50">
+      {/* 1. Mobile Header: sticky top-0 */}
+      <header className={`md:hidden bg-[#ff4141] text-white flex justify-between items-center px-4 py-3 shadow-md sticky top-0 z-50 ${mobileHeaderHeight}`}>
         <h1 className="text-xl font-bold">Admin Dashboard</h1>
         <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
           {isSidebarOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
       </header>
 
-      {/* 2. Sidebar: Z-index ko header se zyada karein (e.g., z-51 ya z-50 se zyada koi bhi value). */}
+      {/* 2. Sidebar */}
       <AnimatePresence>
         {(isSidebarOpen || !isMobile) && (
           <motion.aside
@@ -45,18 +61,24 @@ const AdminPanel = () => {
             animate={{ x: 0 }}
             exit={{ x: isMobile ? -250 : 0 }}
             transition={{ type: "tween", duration: 0.3 }}
-            // CHANGE: z-50/z-40 ko z-51 kar dein.
-            className={`md:relative md:translate-x-0 ${
+            // FIX: Mobile sidebar starts below the mobile header and takes remaining height.
+            // Desktop sidebar is sticky/fixed on the left side and takes full viewport height.
+            className={`md:relative md:translate-x-0 w-64 bg-[#ff4141] text-white flex flex-col shrink-0 ${
               isMobile
-                ? "fixed top-0 left-0 h-full z-[51] shadow-lg" // <--- Z-INDEX CHANGE
-                : "h-auto"
-            } w-64 bg-[#ff4141] text-white flex flex-col`}
+                ? `fixed top-[56px] left-0 h-[calc(100vh-56px)] z-[51] shadow-lg` // FIX: Starts below 56px header and uses calc() for remaining height
+                : "h-screen sticky top-0" // FIX: Desktop sticky sidebar
+            }`}
           >
-            <div className="hidden md:block p-6 text-2xl font-bold border-b border-white/30">
+            {/* Desktop Header */}
+            <div className="hidden md:block p-6 text-2xl font-bold border-b border-white/30 shrink-0">
               Admin Dashboard
             </div>
+            
+            {/* Mobile Sidebar Header (Removed the duplicate header for mobile sidebar. The main fixed header handles this.) */}
+            
 
-            <nav className="flex flex-col mt-6 overflow-y-auto">
+            {/* Navigation Links (Scrollable Area) */}
+            <nav className="flex flex-col mt-2 overflow-y-auto flex-1">
               <button
                 onClick={() => handleSectionChange("reports")}
                 className={`text-left px-6 py-3 hover:bg-white/20 ${
@@ -89,6 +111,14 @@ const AdminPanel = () => {
               >
                 📖 Reviews Management
               </button>
+              <button
+                onClick={() => handleSectionChange("contacts")}
+                className={`text-left px-6 py-3 hover:bg-white/20 ${
+                  activeSection === "contacts" && "bg-white/30"
+                }`}
+              >
+                📖 Contacts Management
+              </button>
               
               <button
                 onClick={() => handleSectionChange("orders")}
@@ -107,15 +137,37 @@ const AdminPanel = () => {
                 👤 Users
               </button>
             </nav>
+
+            {/* --- Bottom Action Buttons (Fixed at the bottom of the sidebar) --- */}
+            <div className="p-4 border-t border-white/30 space-y-3 shrink-0"> 
+               {/* Go to Home Page Button */}
+              <button
+                onClick={() => {
+                    navigate("/");
+                    if (isMobile) setIsSidebarOpen(false);
+                }}
+                className="w-full text-center py-2 bg-white/10 hover:bg-white/30 transition duration-200 rounded-md font-semibold flex items-center justify-center gap-2"
+              >
+                🏠 Go to Home
+              </button>
+              
+               {/* Logout Button */}
+              <button
+                onClick={handleLogout}
+                className="w-full text-center py-2 bg-red-700 hover:bg-red-800 transition duration-200 rounded-md font-semibold flex items-center justify-center gap-2"
+              >
+                🚪 Logout
+              </button>
+            </div>
           </motion.aside>
         )}
       </AnimatePresence>
 
-      {/* 3.Dark Overlay: Z-index ko sidebar se kam (e.g., z-50) karein. */}
+      {/* 3.Dark Overlay */}
       {isMobile && isSidebarOpen && (
         <motion.div
-          //CHANGE: z-30 ko z-50 kar dein.
-          className="fixed inset-0 bg-black bg-opacity-40 z-50" // <--- Z-INDEX CHANGE
+          // FIX: The dark overlay needs to cover the entire screen, including the fixed mobile header.
+          className="fixed inset-0 bg-black bg-opacity-40 z-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -125,9 +177,7 @@ const AdminPanel = () => {
 
       {/* Main Content */}
       <main
-        className={`flex-1 p-4 md:p-10 mt-16 md:mt-0 overflow-y-auto transition-all duration-300 ${
-          !isMobile ? "" : ""
-        }`}
+        className="flex-1 p-4 md:p-10 overflow-y-auto" // Added overflow-y-auto for content scrolling
       >
         <motion.div
           key={activeSection}
@@ -141,6 +191,7 @@ const AdminPanel = () => {
           {activeSection === "reports" && <AdminReports />}
           {activeSection === "orders" && <AdminOrders />}
           {activeSection === "users" && <UsersTable />}
+          {activeSection === "contacts" && <AdminContactManagement />}
         </motion.div>
       </main>
     </div>

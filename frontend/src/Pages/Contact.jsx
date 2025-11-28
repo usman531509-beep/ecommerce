@@ -1,8 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
+import axios from "axios";
+
+
+const API_BASE_URL = "http://localhost:4000/api/contact"; 
 
 const Contact = () => {
+    // New state for form data and submission status
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        message: "",
+    });
+    const [submissionStatus, setSubmissionStatus] = useState({ 
+        loading: false, 
+        message: "", 
+        success: null 
+    });
+
     const socialclicks = (platform) => {
         let url = "";
         switch(platform) {
@@ -20,6 +36,30 @@ const Contact = () => {
         }
         window.open(url, '_blank');
     };
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setSubmissionStatus({ loading: true, message: "", success: null });
+
+        try {
+            const response = await axios.post(`${API_BASE_URL}`, formData);
+            setSubmissionStatus({ loading: false, message: "Message sent successfully! Our team will contact you shortly", success: true });
+            setFormData({ name: "", email: "", message: "" }); 
+        } catch (error) {
+            console.error("Error submitting contact form:", error);
+            setSubmissionStatus({ 
+                loading: false, 
+                message: error.response?.data?.message || "Failed to send message. Please try again later.", 
+                success: false 
+            });
+        }
+    };
+
+
   return (
     <section className="min-h-screen bg-gradient-to-b from-[#fde1ff] to-[#e1ffea22] py-20 px-6 md:px-16 lg:px-24 font-[Lucida_Sans]">
       
@@ -53,29 +93,60 @@ const Contact = () => {
             Send us a Message
           </h2>
 
-          <form className="flex flex-col gap-5">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <input
               type="text"
+              name="name" // Added name attribute
               placeholder="Your Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
               className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#ff4141] transition"
             />
             <input
               type="email"
+              name="email" // Added name attribute
               placeholder="Your Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
               className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#ff4141] transition"
             />
             <textarea
               rows="5"
+              name="message" // Added name attribute
               placeholder="Your Message"
+              value={formData.message}
+              onChange={handleChange}
+              required
               className="border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-[#ff4141] transition"
             ></textarea>
 
+            {/* Submission Status Message */}
+            {submissionStatus.message && (
+                <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className={`text-sm font-medium p-2 rounded-lg text-center ${
+                        submissionStatus.success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                    }`}
+                >
+                    {submissionStatus.message}
+                </motion.p>
+            )}
+
             <motion.button
+              type="submit"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-[#ff4141] text-white font-semibold py-3 rounded-full hover:bg-[#e63b3b] transition-all duration-300 shadow-md"
+              disabled={submissionStatus.loading} // Disable button while loading
+              className={`text-white font-semibold py-3 rounded-full transition-all duration-300 shadow-md ${
+                submissionStatus.loading 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-[#ff4141] hover:bg-[#e63b3b]'
+              }`}
             >
-              Send Message
+              {submissionStatus.loading ? 'Sending...' : 'Send Message'}
             </motion.button>
           </form>
         </motion.div>

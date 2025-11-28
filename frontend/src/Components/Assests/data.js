@@ -3,7 +3,7 @@ import p2_img from './product_24.jpg'
 import p3_img from './product_3.jpg'
 import p4_img from './product_21.jpg'
 
-let data_product = [
+let   data_product = [
   {
     id:25,
     name:"Striped Flutter leeve Overlap Collar Peplum Hem",

@@ -1,5 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import Logo from "../Assests/logo.jpg";
+import atelier from "../Assests/atelier2.png";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMagnifyingGlass,
@@ -9,11 +11,12 @@ import {
   faUser,
   faBars,
   faXmark,
+  faChevronDown,
+  faGaugeHigh,
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
 import { motion } from "framer-motion";
-import { jwtDecode } from "jwt-decode";
 
 function Header() {
   const { getTotalCartItem, all_product } = useContext(ShopContext);
@@ -21,6 +24,8 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [userRole, setUserRole] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
   
 
   // Handle scroll for sticky navbar style
@@ -33,14 +38,14 @@ function Header() {
   }, []);
 
  useEffect(() => {
-  const user = localStorage.getItem("user");
-  if (user) {
+  const userString = localStorage.getItem("user");
+  if (userString) {
     try {
-      const parsedUser = JSON.parse(user);
+      const parsedUser = JSON.parse(userString);
       setUserRole(parsedUser.role || "user");
     } catch (err) {
-      console.error("Invalid user object");
-      setUserRole("user");
+      console.error("Invalid user JSON in localStorage:", err);
+      setUserRole("guest");
     }
   } else {
     setUserRole("guest");
@@ -48,8 +53,58 @@ function Header() {
 }, []);
 
 
+  // --- 1. HIDE HEADER FOR ADMIN (This logic remains) ---
+  if (userRole === "admin" && window.location.pathname.startsWith("/admin")) {
+    return null; // Header is hidden if user is admin AND currently on an admin route
+  }
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.replace("/");
+  };
+
+
   const filteredProducts = all_product.filter((product) =>
     product.name.toLowerCase().includes(searchVal.toLowerCase())
+  );
+
+  // Component for Admin Dropdown
+  const AdminDropdown = ({ closeMenu }) => (
+    <div className="relative">
+      <button
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        className="flex items-center gap-1 hover:text-red-500 transition font-normal" // Font weight reduced
+      >
+        <FontAwesomeIcon icon={faUser} />
+        <FontAwesomeIcon icon={faChevronDown} className={`text-sm ml-1 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : 'rotate-0'}`} />
+      </button>
+
+      {isDropdownOpen && (
+        <div 
+          className="absolute right-0 mt-3 w-48 bg-white border border-gray-200 rounded-lg shadow-xl overflow-hidden animate-fadeIn"
+          onMouseLeave={() => setIsDropdownOpen(false)} // Close on mouse leave
+        >
+          {/* Admin Panel Link */}
+          <Link 
+            to="/admin" 
+            onClick={() => { closeMenu(); setIsDropdownOpen(false); }}
+            className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-[#ff4141] transition duration-150 border-b border-gray-100 text-base font-normal" // Font weight reduced
+          >
+            <FontAwesomeIcon icon={faGaugeHigh} className="w-4"/>
+            Admin Panel
+          </Link>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="w-full text-left flex items-center gap-2 px-4 py-3 text-gray-700 hover:bg-red-50 hover:text-[#ff4141] transition duration-150 text-base font-normal" // Font weight reduced
+          >
+            <FontAwesomeIcon icon={faRightFromBracket} className="w-4"/>
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
   );
 
   return (
@@ -57,44 +112,55 @@ function Header() {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
-      className={`w-full fixed top-0 z-50 transition-all duration-500 ${
+      // *** FONT CHANGE APPLIED HERE ***
+      className={`font-sans w-full fixed top-0 z-50 transition-all duration-500 ${
         scrolled
           ? "bg-white/70 backdrop-blur-md shadow-md"
           : "bg-transparent backdrop-blur-0"
       }`}
     >
       <div className="flex items-center justify-between px-5 md:px-12 py-4">
-        {/* Logo or placeholder */}
-        <div className="flex items-center gap-2 w-56">
-          {userRole === "admin" ? (
-            <div className="w-14 h-14"></div> 
-            
-          ) : (
-              <Link to="/" className="flex items-center gap-2">
-              <motion.img
-                whileHover={{ scale: 1.1 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                src={Logo}
-                alt="logo"
-                className="w-14 h-14 rounded-full shadow-md"
+        
+        {/* --- Logo (Center on Mobile, Left on Desktop) --- */}
+        <div className="flex justify-start md:justify-start items-center w-auto md:w-56">
+             <Link 
+                to="/" 
+                className="flex items-center gap-2 
+                           absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0" // Center on mobile
+             >
+              <img 
+                  src={atelier} 
+                  alt="Atelier Logo" 
+                  className="w-24 h-12 object-contain transition-all duration-300 md:w-40 md:h-20" 
               />
-              <span className="hidden sm:inline text-2xl font-bold text-gray-800 tracking-tight">
-                <span className="text-red-500">Store</span>
-              </span>
             </Link>
-            
-          )}
         </div>
 
-        {/* Hamburger (Mobile) */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-2xl text-gray-700 hover:text-red-500 transition"
-        >
-          <FontAwesomeIcon icon={menuOpen ? faXmark : faBars} />
-        </button>
+        {/* --- MOBILE ACTION ICONS (CART and HAMBURGER/XMARK) --- */}
+        <div className="flex items-center md:hidden gap-5 text-2xl text-gray-700">
+            {/* Mobile Cart Icon */}
+            <Link
+              to="/cart"
+              onClick={() => setMenuOpen(false)}
+              className="relative hover:text-red-500 transition transform hover:scale-110"
+            >
+              <FontAwesomeIcon icon={faCartShopping} />
+              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow font-normal">
+                {getTotalCartItem()}
+              </span>
+            </Link>
 
-        {/* Navigation Menu */}
+            {/* Hamburger (Mobile) */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="hover:text-red-500 transition"
+            >
+              <FontAwesomeIcon icon={menuOpen ? faXmark : faBars} />
+            </button>
+        </div>
+
+
+        {/* Navigation Menu (Dropdown on Mobile, Links on Desktop) */}
         <nav
           className={`${
             menuOpen
@@ -117,14 +183,14 @@ function Header() {
                     : `/${item.toLowerCase()}`
                 }
                 onClick={() => setMenuOpen(false)}
-                className="relative text-gray-700 hover:text-[#ff4141] text-lg font-semibold 
-                 font-[Cursive] tracking-wide transition-all duration-300 group"
+                className="relative text-gray-700 hover:text-[#ff4141] text-lg font-normal 
+                 tracking-wide transition-all duration-300 group" // font-semibold/cursive removed, set to font-normal
               >
                 <span className="inline-block transform transition-transform duration-300 group-hover:scale-105 group-hover:translate-y-[-2px]">
                   {item}
                 </span>
                 {item === "Watches" && (
-                  <sup className="absolute -top-2 -right-4 text-xs text-[#ff4141] font-semibold">
+                  <sup className="absolute -top-2 -right-4 text-xs text-[#ff4141] font-medium"> 
                     New
                   </sup>
                 )}
@@ -141,22 +207,22 @@ function Header() {
               placeholder="Search..."
               value={searchVal}
               onChange={(e) => setSearchVal(e.target.value)}
-              className="bg-transparent outline-none text-sm px-2 flex-1 text-gray-700"
+              className="bg-transparent outline-none text-sm px-2 flex-1 text-gray-700 font-normal" // Font weight reduced
             />
           </div>
 
-          {/* Mobile Action Icons */}
+          {/* Mobile Action Icons (Inside Dropdown) */}
           <div className="flex md:hidden items-center justify-center gap-10 text-2xl text-gray-700 mt-5">
             <Link to="/" onClick={() => setMenuOpen(false)} className="hover:text-red-500 transition">
               <FontAwesomeIcon icon={faHeart} />
             </Link>
-
-            {localStorage.getItem("auth-token") ? (
+            
+            {/* Mobile Login/Admin Dropdown/Logout */}
+            {userRole === "admin" ? (
+                <AdminDropdown closeMenu={() => setMenuOpen(false)} />
+            ) : localStorage.getItem("auth-token") ? (
               <button
-                onClick={() => {
-                  localStorage.removeItem("auth-token");
-                  window.location.replace("/");
-                }}
+                onClick={handleLogout}
                 className="hover:text-red-500 transition"
               >
                 <FontAwesomeIcon icon={faRightFromBracket} />
@@ -166,17 +232,6 @@ function Header() {
                 <FontAwesomeIcon icon={faUser} />
               </Link>
             )}
-
-            <Link
-              to="/cart"
-              onClick={() => setMenuOpen(false)}
-              className="relative hover:text-red-500 transition transform hover:scale-110"
-            >
-              <FontAwesomeIcon icon={faCartShopping} />
-              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow">
-                {getTotalCartItem()}
-              </span>
-            </Link>
           </div>
         </nav>
 
@@ -189,7 +244,7 @@ function Header() {
               placeholder="Search products..."
               value={searchVal}
               onChange={(e) => setSearchVal(e.target.value)}
-              className="bg-transparent outline-none text-sm px-2 flex-1 text-gray-700"
+              className="bg-transparent outline-none text-sm px-2 flex-1 text-gray-700 font-normal" // Font weight reduced
             />
             {searchVal && (
               <div className="absolute top-12 left-0 w-full bg-white border rounded-lg shadow-lg z-50 overflow-hidden animate-fadeIn">
@@ -199,13 +254,13 @@ function Header() {
                       key={product.id}
                       to={`/product/${product.id}`}
                       onClick={() => setSearchVal("")}
-                      className="block px-4 py-2 hover:bg-red-50 text-gray-700 text-sm transition-colors"
+                      className="block px-4 py-2 hover:bg-red-50 text-gray-700 text-sm transition-colors font-normal" // Font weight reduced
                     >
                       {product.name}
                     </Link>
                   ))
                 ) : (
-                  <div className="px-4 py-2 text-gray-500 text-sm">
+                  <div className="px-4 py-2 text-gray-500 text-sm font-normal">
                     No results found.
                   </div>
                 )}
@@ -214,17 +269,17 @@ function Header() {
           </div>
 
           {/* Desktop Action Icons */}
-          <div className="flex items-center gap-6 text-xl text-gray-700">
+          <div className="flex items-center gap-6 text-2xl text-gray-700">
             <Link to="/" className="hover:text-red-500 transition">
               <FontAwesomeIcon icon={faHeart} />
             </Link>
-
-            {localStorage.getItem("auth-token") ? (
+            
+            {/* Desktop Login/Admin Dropdown/Logout */}
+            {userRole === "admin" ? (
+                <AdminDropdown closeMenu={() => setMenuOpen(false)} />
+            ) : localStorage.getItem("auth-token") ? (
               <button
-                onClick={() => {
-                  localStorage.clear();
-                  window.location.replace("/");
-                }}
+                onClick={handleLogout}
                 className="hover:text-red-500 transition"
               >
                 <FontAwesomeIcon icon={faRightFromBracket} />
@@ -240,7 +295,7 @@ function Header() {
               className="relative hover:text-red-500 transition transform hover:scale-110"
             >
               <FontAwesomeIcon icon={faCartShopping} />
-              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow">
+              <span className="absolute -top-2 -right-3 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow font-normal">
                 {getTotalCartItem()}
               </span>
             </Link>

@@ -4,6 +4,7 @@ import footer_logo from "../Assests/logo.jpg";
 import whatsapp from "../Assests/whatsapp-brands-solid.svg";
 import instagram from "../Assests/instagram-brands-solid.svg";
 import snap from "../Assests/snapchat-brands-solid.svg";
+import atelier from "../Assests/atelier2.png";
 
 const Footer = () => {
   return (
@@ -27,14 +28,14 @@ const Footer = () => {
         {/* Logo & Description */}
         <div className="flex flex-col items-start">
           <motion.img
-            src={footer_logo}
+            src={atelier}
             alt="logo"
-            className="h-20 w-20 rounded-full mb-4 shadow-md hover:scale-110 transition-transform"
+            className="w-40 mb-6"
             whileHover={{ rotate: 6 }}
           />
           <p className="text-sm text-gray-600 leading-relaxed max-w-[260px]">
             Your trusted destination for top-quality, affordable, and stylish
-            tech accessories. <span className="font-semibold text-[#ff4141]">ShopEase</span> Where shopping meets comfort.
+            accessories. <span className="font-semibold text-[#ff4141]">Atelier</span> Where shopping meets comfort.
           </p>
         </div>
 
@@ -119,7 +120,7 @@ const Footer = () => {
       {/* Divider + Bottom Text */}
       <div className="mt-12 border-t border-gray-300 pt-4 text-center text-sm text-gray-500">
         © 2025{" "}
-        <span className="font-semibold text-[#ff4141]">usman-store.com</span> — All rights reserved.
+        <span className="font-semibold text-[#ff4141]">Atelier.com</span> — All rights reserved.
       </div>
     </footer>
   );
