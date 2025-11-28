@@ -5,8 +5,34 @@ import whatsapp from "../Assests/whatsapp-brands-solid.svg";
 import instagram from "../Assests/instagram-brands-solid.svg";
 import snap from "../Assests/snapchat-brands-solid.svg";
 import atelier from "../Assests/atelier2.png";
+import { useEffect, useState } from "react";
 
 const Footer = () => {
+
+  const [userRole, setUserRole] = useState("guest");
+   
+   useEffect(() => {
+    const userString = localStorage.getItem("user");
+    if (userString) {
+      try {
+        const parsedUser = JSON.parse(userString);
+        setUserRole(parsedUser.role || "user");
+      } catch (err) {
+        console.error("Invalid user JSON in localStorage:", err);
+        setUserRole("guest");
+      }
+    } else {
+      setUserRole("guest");
+    }
+  }, []);
+  
+  
+    if (userRole === "admin" && window.location.pathname.startsWith("/admin")) {
+      return null;
+    }
+
+
+
   return (
     <footer className="relative bg-gradient-to-b from-[#fff8f8] to-[#f8fafc] text-gray-700 pt-14 pb-6 px-6 md:px-12 font-[Poppins] overflow-hidden">
       {/* Floating blur effects */}
