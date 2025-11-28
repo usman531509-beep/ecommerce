@@ -10,8 +10,9 @@ import authRoutes from "./Routes/Authroutes.js";
 import productRoutes from "./Routes/productRoutes.js";
 import cartRoutes from "./Routes/cartRoutes.js";
 import categoryRoutes from "./Routes/categoryRoutes.js";
-import orderRoutes from "./Routes/orderRoutes.js"; // 🆕 Added
-import reviewRoutes from "./Routes/ReviewRoutes.js"; // 🆕 Added
+import orderRoutes from "./Routes/orderRoutes.js"; 
+import reviewRoutes from "./Routes/ReviewRoutes.js"; 
+import contactRoutes from "./Routes/contactRoutes.js"; 
 
 dotenv.config();
 connectDB();
@@ -35,6 +36,7 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes); 
 app.use("/api/reviews", reviewRoutes); 
+app.use("/api/contact", contactRoutes);
 
 //Error Handlers
 app.use(notFound);
