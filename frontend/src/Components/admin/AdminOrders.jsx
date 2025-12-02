@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import OrderSlip from "./Slip";
+import { ShopContext } from "../../Context/ShopContext.jsx";
+import { useContext } from "react";
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(true); 
   const [slipOrder, setSlipOrder] = useState(null);
-
+  const { API_BASE_URL } = useContext(ShopContext);
   const token = localStorage.getItem("auth-token");
-  const API_URL = "http://localhost:4000/api/orders"; 
+  const API_URL = `${API_BASE_URL}/api/orders`; 
   
 
   const fetchOrders = async () => {

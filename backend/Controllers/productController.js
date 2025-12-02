@@ -35,7 +35,7 @@ export const addProduct = async (req, res) => {
     let images = [];
     if (req.files && req.files.length > 0) {
       images = req.files.map((file) => ({
-        url: `${req.protocol}://${req.get("host")}/uploads/${file.filename}`,
+        url: `${process.env.API_BASE_URL}/uploads/${file.filename}`,
         alt: name,
       }));
     }
@@ -139,7 +139,7 @@ export const updateProduct = async (req, res) => {
     // Handle uploaded images
     if (req.files && req.files.length > 0) {
       const newImages = req.files.map((file) => ({
-        url: `${req.protocol}://${req.get("host")}/uploads/${file.filename}`,
+        url: `${process.env.API_BASE_URL}/uploads/${file.filename}`,
         alt: name || product.name,
       }));
       product.images = [...product.images, ...newImages];

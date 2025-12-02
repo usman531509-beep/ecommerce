@@ -3,12 +3,11 @@ import axios from "axios";
 import { ShopContext } from "../../Context/ShopContext";
 import star_icon from "../Assests/star_icon.png";
 
-
 const ProductDisplay = ({ product }) => {
-  const { addToCart } = useContext(ShopContext);
+  const { addToCart, API_BASE_URL } = useContext(ShopContext);
 
   const [showPopup, setShowPopup] = useState(false);
-
+  
   const colors = product.colors || [];
   const sizes = product.sizes || [];
 
@@ -29,7 +28,7 @@ const ProductDisplay = ({ product }) => {
 
   const fetchReviews = async () => {
     try {
-      const res = await axios.get(`http://localhost:4000/api/reviews/product/${product._id}`);
+      const res = await axios.get(`${API_BASE_URL}/api/reviews/product/${product._id}`);
       setReviews(res.data);
     } catch (err) {
       console.error("Review fetch error:", err);
@@ -45,7 +44,7 @@ const ProductDisplay = ({ product }) => {
       return alert("Please fill all fields");
 
     try {
-      await axios.post("http://localhost:4000/api/reviews", {
+      await axios.post(`${API_BASE_URL}/api/reviews`, {
         productId: product._id,
         name,
         email,

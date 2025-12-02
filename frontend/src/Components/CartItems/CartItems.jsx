@@ -1,17 +1,18 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState,} from "react";
 import { motion } from "framer-motion"; 
 import { ShopContext } from "../../Context/ShopContext";
-
 import remove_icon from "../Assests/cart_cross_icon.png";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { CheckCircle, Truck, ShoppingBag } from "lucide-react"; 
 
+
+
 const CartItems = () => { 
   const { cartItems, removeFromCart, getTotalCartAmount, clearCart } = useContext(ShopContext);
   const [customer, setCustomer] = useState({ name: "", email: "", phone: "" });
   const [shipping, setShipping] = useState({ address: "", city: "", postalCode: "", country: "" });
-  
+  const {API_BASE_URL} = useContext(ShopContext);
   const [orderPlaced, setOrderPlaced] = useState(false); 
   
   const totalAmount = getTotalCartAmount();
@@ -53,7 +54,7 @@ const CartItems = () => {
     try {
     
       
-      await axios.post("http://localhost:4000/api/orders", orderData);
+      await axios.post(`${API_BASE_URL}/api/orders`, orderData);
       console.log("Order Placed:", orderData);
       
     

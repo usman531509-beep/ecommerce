@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState , useContext} from "react";
 import axios from "axios";
-
+import { ShopContext } from "../../Context/ShopContext.jsx";
 const CategoryManagement = () => {
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
@@ -11,6 +11,8 @@ const CategoryManagement = () => {
 
   const token = localStorage.getItem("auth-token");
 
+  const { API_BASE_URL } = useContext(ShopContext);
+  
   // NOTE: In a real app, this should handle if token is missing
   const config = {
     headers: {
@@ -22,7 +24,7 @@ const CategoryManagement = () => {
   // Fetch all categories
   const fetchCategories = async () => {
     try {
-      const { data } = await axios.get("http://localhost:4000/api/categories");
+      const { data } = await axios.get(`${API_BASE_URL}/api/categories`);
       setCategories(data);
     } catch (err) {
       setError(err.response?.data?.message || err.message);
@@ -40,13 +42,13 @@ const CategoryManagement = () => {
     try {
       if (editingCategory) {
         await axios.put(
-          `http://localhost:4000/api/categories/${editingCategory._id}`,
+          `${API_BASE_URL}/api/categories/${editingCategory._id}`,
           { name, description },
           config
         );
       } else {
         await axios.post(
-          "http://localhost:4000/api/categories",
+          `${API_BASE_URL}/api/categories`,
           { name, description },
           config
         );
@@ -79,7 +81,7 @@ const CategoryManagement = () => {
     if (!window.confirm("Are you sure you want to delete this category?")) return;
     setLoading(true);
     try {
-      await axios.delete(`http://localhost:4000/api/categories/${id}`, config);
+      await axios.delete(`${API_BASE_URL}/api/categories/${id}`, config);
       fetchCategories();
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Failed to delete category.";

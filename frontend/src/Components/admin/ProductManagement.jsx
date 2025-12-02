@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
   import axios from "axios";
-  
-  
+  import useContext from "react";
+  import { ShopContext } from "../../Context/ShopContext.jsx";
+
+
+    
   const BoldIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8V4m0 0a4 4 0 014 4h-4m0 0a4 4 0 00-4 4v0a4 4 0 004 4m0 0a4 4 0 004 4v0a4 4 0 00-4 4m0 0V8"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12h-3"></path></svg>;
   const ItalicIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20h4m-4 0h-4m4-16h4m0 0h-4m-2 16l-2-16m6 16l2-16"></path></svg>;
   const ListIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>;
@@ -90,6 +93,7 @@ import React, { useEffect, useState, useRef } from "react";
     const token = localStorage.getItem("auth-token");
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
+    const { API_BASE_URL } = useContext(ShopContext);
 
     const [form, setForm] = useState({
       name: "",
@@ -129,7 +133,7 @@ import React, { useEffect, useState, useRef } from "react";
    
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/products");
+        const res = await axios.get(`${API_BASE_URL}/api/products`);
         setProducts(res.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -139,7 +143,7 @@ import React, { useEffect, useState, useRef } from "react";
     //Fetch all categories
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/categories");
+        const res = await axios.get(`${API_BASE_URL}/api/categories`);
         setCategories(res.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -238,13 +242,13 @@ import React, { useEffect, useState, useRef } from "react";
 
         if (editingProduct) {
           await axios.put(
-            `http://localhost:4000/api/products/${editingProduct._id}`,
+            `${API_BASE_URL}/api/products/${editingProduct._id}`,
             formData,
             config
           );
           displayMessage("Product updated successfully!");
         } else {
-          await axios.post("http://localhost:4000/api/products", formData, config);
+          await axios.post(`${API_BASE_URL}/api/products`, formData, config);
           displayMessage("Product added successfully!");
         }
 
@@ -278,7 +282,7 @@ import React, { useEffect, useState, useRef } from "react";
       if (!window.confirm("Are you sure you want to delete this product?")) return;
       
       try {
-        await axios.delete(`http://localhost:4000/api/products/${id}`, {
+        await axios.delete(`${API_BASE_URL}/api/products/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         displayMessage("Product deleted!");

@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Trash2, CheckSquare, Clock } from "lucide-react";
 import axios from "axios";
+import { ShopContext } from "../../Context/ShopContext.jsx";
 
-// API Base URL ko apne server URL se replace karein
-const API_BASE_URL = "http://localhost:4000/api/contact"; 
-const TOKEN = localStorage.getItem("auth-token"); // Admin token
+  
+
+// const API_BASE_URL = "http://localhost:4000/api/contact"; 
+
+
+const TOKEN = localStorage.getItem("auth-token"); 
 
 const AdminContactManagement = () => {
+  const { API_BASE_URL } = useContext(ShopContext);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,7 +20,7 @@ const AdminContactManagement = () => {
   const fetchMessages = async () => {
     try {
       // Assuming GET /api/contact fetches all messages (as per routes setup)
-      const res = await axios.get(`${API_BASE_URL}`, { 
+      const res = await axios.get(`${API_BASE_URL}/api/contact`, { 
         headers: {
           Authorization: `Bearer ${TOKEN}`,
         },
@@ -64,7 +69,7 @@ const AdminContactManagement = () => {
   const deleteMessage = async (id) => {
         if (!window.confirm("Are you sure you want to delete this message?")) return;
         try {
-            await axios.delete(`${API_BASE_URL}/${id}`, {
+            await axios.delete(`${API_BASE_URL}/api/contact/${id}`, {
                 headers: {
                     Authorization: `Bearer ${TOKEN}`,
                 },

@@ -18,10 +18,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
 import { motion } from "framer-motion";
 
-const API_CATEGORIES_URL = "http://localhost:4000/api/categories"; 
+
+// const API_CATEGORIES_URL = "http://localhost:4000/api/categories"; 
 
 function Header() {
-  const { getTotalCartItem, all_product } = useContext(ShopContext);
+  const { getTotalCartItem, all_product, API_BASE_URL } = useContext(ShopContext);
   const [searchVal, setSearchVal] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -35,7 +36,7 @@ function Header() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(API_CATEGORIES_URL);
+        const response = await fetch(`${API_BASE_URL}/api/categories`);
         const data = await response.json();
 
         let fetchedCategories = [];

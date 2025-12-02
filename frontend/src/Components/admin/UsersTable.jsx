@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
-
+import { ShopContext } from "../../Context/ShopContext.jsx";
 const UsersTable = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  
+  const { API_BASE_URL } = useContext(ShopContext);
   const token = localStorage.getItem("auth-token");
 
   
@@ -19,7 +19,7 @@ const UsersTable = () => {
         throw new Error("Authentication token not found.");
       }
       
-      const res = await axios.get("http://localhost:4000/api/auth/allusers", {
+      const res = await axios.get(`${API_BASE_URL}/api/auth/allusers`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(res.data);

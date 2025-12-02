@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Trash2 } from "lucide-react";
-
+import { ShopContext } from "../../Context/ShopContext.jsx";
 const AdminReviewManagement = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { API_BASE_URL } = useContext(ShopContext);
   const token = localStorage.getItem("auth-token");
   
   const fetchReviews = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/reviews", {
+      const res = await axios.get(`${API_BASE_URL}/api/reviews`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -27,7 +27,7 @@ const AdminReviewManagement = () => {
     if (!window.confirm("Are you sure you want to delete this review?")) return;
 
     try {
-      await axios.delete(`http://localhost:4000/api/reviews/${id}`, {
+      await axios.delete(`${API_BASE_URL}/api/reviews/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

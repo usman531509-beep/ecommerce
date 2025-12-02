@@ -1,18 +1,19 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useContext } from 'react';
 import axios from 'axios';
-
+import { ShopContext } from "../../Context/ShopContext.jsx";
 
 const AdminReports = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("auth-token");
-  const API_URL = "http://localhost:4000/api/orders"; 
+  const { API_BASE_URL } = useContext(ShopContext);
+  // const API_URL = "http://localhost:4000/api/orders"; 
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(API_URL, {
+      const res = await axios.get(`${API_BASE_URL}/api/orders`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setOrders(res.data);

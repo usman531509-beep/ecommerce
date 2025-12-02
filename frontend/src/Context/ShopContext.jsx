@@ -79,12 +79,12 @@ const ShopContextProvider = (props) => {
   const [all_product, setAllProduct] = useState([]);
   const [user, setUser] = useState(localStorage.getItem("auth-token") || null);
   const [loadingUser, setLoadingUser] = useState(false);
-
+  const API_BASE_URL = "https://ecommerce-w9sv.onrender.com";
   //Fetch all products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/products");
+        const res = await axios.get(`${API_BASE_URL}/api/products`);
         if (res.data) setAllProduct(res.data);
       } catch (error) {
         console.error("Error fetching products:", error.message);
@@ -102,7 +102,7 @@ const ShopContextProvider = (props) => {
 
       setLoadingUser(true);
       try {
-        const res = await axios.get("http://localhost:4000/api/auth/profile", {
+        const res = await axios.get(`${API_BASE_URL}/api/auth/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -191,6 +191,7 @@ const ShopContextProvider = (props) => {
     getTotalCartAmount,
     getTotalCartItem,
     logoutUser,
+    API_BASE_URL,
   };
 
   return (
