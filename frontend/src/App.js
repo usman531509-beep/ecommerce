@@ -23,8 +23,7 @@ import './index.css';
 import ScrollToHashElement from './Lib/ScrollToHashElement.jsx';
 import ProtectedRoute from './Components/ProtectedRoutes/ProtectedRoute.jsx';
 import AdminPanel from './Pages/AdminPanel.jsx';
-
-// import ScrollToTop from './Components/ScrollToTop/ScrollToTop.JSX';
+import ScrollToTop from './Components/ScrollToTop/ScrollToTop.jsx';
 
 
 const stripePromise = loadStripe('pk_test_51RLfz8Kn5UF7A7CjaOfKjFrD27yrWNU9z9PQsQVPnt1XGG5t0Eac16ecyXNkKE47jYZMl8xWP4PEeGVmMcAibmI800zJiXlct7');
@@ -37,7 +36,7 @@ function App() {
       <BrowserRouter>
 
       <Header/>
-      {/* <ScrollToTop/> */}
+      <ScrollToTop/>
       <Routes>
         
         <Route path='/' element={<Shop/>}/>
