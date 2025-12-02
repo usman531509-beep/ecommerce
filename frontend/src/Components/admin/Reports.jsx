@@ -19,7 +19,7 @@ const AdminReports = () => {
       setError(null);
     } catch (error) {
       console.error("Error fetching orders:", error);
-      setError("Orders data fetch karne mein koi issue aaya hai. Kripya network ya server connection check karein.");
+      setError("Failed to load orders data. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -101,7 +101,7 @@ const AdminReports = () => {
     return (
       <div className="p-8 text-center text-red-700 bg-red-100 border border-red-400 rounded-lg min-h-screen">
         <p className="font-semibold">{error}</p>
-        <p className="text-sm mt-2">Kripya network ya server connection check karein.</p>
+        <p className="text-sm mt-2">Please check the newtwork connection.</p>
       </div>
     );
   }
@@ -206,7 +206,7 @@ const AdminReports = () => {
               {productSalesArray.length === 0 ? (
                 <tr>
                   <td colSpan="4" className="p-4 text-center text-gray-500">
-                    Koi product sales data nahi mila.
+                    No product sales data available.
                   </td>
                 </tr>
               ) : (

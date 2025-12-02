@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+import OrderSlip from "./Slip";
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(true); 
+  const [slipOrder, setSlipOrder] = useState(null);
+
   const token = localStorage.getItem("auth-token");
   const API_URL = "http://localhost:4000/api/orders"; 
   
@@ -13,7 +15,6 @@ const AdminOrders = () => {
     try {
       setLoading(true); 
 
-     
       const res = await axios.get(API_URL, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -78,10 +79,10 @@ const AdminOrders = () => {
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
       <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">📦 All Orders</h2>
       
-      {/* Loading Indicator */}
+      
       {loading && <p className="text-center text-red-600 font-semibold mt-8">Orders data load ho raha hai...</p>}
 
-      {/* Orders Table Container - Ensures horizontal scroll on small screens */}
+      
       {!loading && ( 
         <div className="overflow-x-auto bg-white shadow-xl rounded-xl">
           <table className="min-w-full text-left text-sm">
@@ -170,8 +171,8 @@ const AdminOrders = () => {
               &times;
             </button>
 
-            <h3 className="text-xl sm:text-2xl font-bold mb-4 text-gray-800 border-b pb-2">
-              🧾 Order #{selectedOrder._id?.slice(-6)} Details
+            <h3 className="text-xl sm:text-2xl mb-4 text-gray-800 border-b pb-2">
+              🧾 Order #{selectedOrder._id}
             </h3>
 
        
@@ -257,6 +258,14 @@ const AdminOrders = () => {
             </div>
             
             <div className="mt-6 text-center">
+              <button
+                  onClick={() => setSlipOrder(selectedOrder)}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition w-full mt-4"
+                >
+                  Generate Order Slip
+                </button>
+
+
                 <button
                     onClick={() => setSelectedOrder(null)}
                     className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition"
@@ -268,7 +277,12 @@ const AdminOrders = () => {
           </div>
         </div>
       )}
+      {slipOrder && (
+  <OrderSlip order={slipOrder} onClose={() => setSlipOrder(null)} />
+)}
+
     </div>
+
   );
 };
 

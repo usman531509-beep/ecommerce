@@ -1,77 +1,87 @@
 import React, { useContext, useState, useMemo } from "react";
+import { useParams } from 'react-router-dom';
 import { ShopContext } from "../Context/ShopContext";
 import Item from "../Components/Items/Item";
-import { SlidersHorizontal, ArrowDownWideNarrow, X } from "lucide-react"; // Icons for filters/sorting/close
+import { SlidersHorizontal, ArrowDownWideNarrow, X } from "lucide-react"; 
 import { motion } from "framer-motion";
 
 const ShopCategory = (props) => {
   const { all_product } = useContext(ShopContext);
   const [visibleProducts, setVisibleProducts] = useState(8);
   const [sortOrder, setSortOrder] = useState("");
-  
-  // NEW STATES FOR FILTERING
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
-  const [inStockOnly, setInStockOnly] = useState(false); // Example stock filter
+  const [inStockOnly, setInStockOnly] = useState(false);
+
+  const { categoryName } = useParams();
+  const currentCategory = categoryName || 'shop'; 
 
   const ACCENT_COLOR = "text-[#ff4141]";
   const ACCENT_BG = "bg-[#ff4141]";
   const LIGHT_BG = "bg-gray-50"; 
   
-  // Toggle Filter Panel
   const toggleFilter = () => setIsFilterOpen(prev => !prev);
 
-  // Apply Price Filter
   const handlePriceChange = (e) => {
     setPriceRange({ ...priceRange, [e.target.name]: e.target.value });
   };
   
-  // Clear all filters (except stock for now)
   const clearFilters = () => {
     setPriceRange({ min: "", max: "" });
     setInStockOnly(false);
-    setVisibleProducts(8); // Reset visible products on filter change
+    setVisibleProducts(8);
   };
 
 
-  // Filter products based on category, price range, and stock
+  // Filter products based on active status, category, price range, and stock
   const filteredProducts = useMemo(() => {
     if (!all_product || all_product.length === 0) return [];
-
+    
+    const normalizedCurrentCategory = currentCategory.toLowerCase();
+    
     let products = all_product.filter((item) => {
-      // 1. Category Filter (Existing)
+        
+      if (item.isActive !== true) {
+          return false;
+      }
+      
+      // 1. Category Filter
       if (!item.category) return false;
-      const categoryName =
+      
+      const itemCategoryName =
         typeof item.category === "object"
           ? item.category.name?.toLowerCase()
           : item.category.toLowerCase();
-      if (categoryName !== props.category?.toLowerCase()) return false;
+          
+      // Special case: If the path is '/' (Shop page), show all active products
+      if (normalizedCurrentCategory === 'shop' && itemCategoryName) return true; 
 
-      // 2. Price Range Filter (NEW)
+      // Match the item's category name with the URL category name
+      if (itemCategoryName !== normalizedCurrentCategory) return false;
+
+      // 2. Price Range Filter
       const minPrice = Number(priceRange.min);
       const maxPrice = Number(priceRange.max);
       
       if (minPrice > 0 && item.price < minPrice) return false;
       if (maxPrice > 0 && item.price > maxPrice) return false;
       
-      // 3. Stock Filter (NEW - assuming a stock property exists, e.g., item.stockCount > 0)
+      // 3. Stock Filter
       if (inStockOnly) {
-          // Replace 'item.stockCount' with your actual stock property
-          const stockCount = item.stockCount || 1; // Default to 1 if stock is undefined
+          const stockCount = item.stockCount || 1; 
           if (stockCount <= 0) return false;
       }
       
       return true;
     });
 
-    // Reset visible products count whenever the filters change
     setVisibleProducts(8); 
     
     return products;
-  }, [all_product, props.category, priceRange, inStockOnly]);
+  }, [all_product, currentCategory, priceRange, inStockOnly]);
 
 
-  // Sort products by price
+  // Sort products by price (Existing logic)
   const sortedProducts = useMemo(() => {
     let products = [...filteredProducts];
     if (sortOrder === "lowToHigh") {
@@ -85,8 +95,8 @@ const ShopCategory = (props) => {
   // Load more items
   const loadMoreItems = () => setVisibleProducts((prev) => prev + 6);
 
+  // --- Rendering ---
   return (
-    // >>> CHANGE HERE: py-16 replaced with pt-32 (for large top padding) and pb-16 <<<
     <div className="w-full flex flex-col items-center px-4 md:px-10 pt-32 pb-16 bg-white min-h-screen"> 
       
       {/* 🚀 Category Header */}
@@ -100,7 +110,7 @@ const ShopCategory = (props) => {
             The Essentials
         </p>
         <h1 className="text-4xl md:text-5xl font-light text-gray-900 capitalize">
-          {props.category} <span className="font-medium">Collection</span>
+          {currentCategory} <span className="font-medium">Collection</span>
         </h1>
       </motion.div>
 
@@ -128,7 +138,7 @@ const ShopCategory = (props) => {
         {/* Filter and Sort Group */}
         <div className="flex gap-4">
           
-          {/* Filter Button (Now functional) */}
+          {/* Filter Button */}
           <button
             onClick={toggleFilter}
             className={`flex items-center gap-2 border rounded-lg px-4 py-2 shadow-sm transition-all text-sm ${
@@ -155,7 +165,7 @@ const ShopCategory = (props) => {
         </div>
       </motion.div>
 
-      {/* --- Filter Panel (NEW) --- */}
+      {/* --- Filter Panel (Existing) --- */}
       {isFilterOpen && (
         <motion.div
             initial={{ height: 0, opacity: 0 }}
@@ -231,7 +241,7 @@ const ShopCategory = (props) => {
       )}
 
 
-      {/* Product Grid */}
+      {/* Product Grid (Existing) */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8 w-full max-w-6xl">
         {sortedProducts.slice(0, visibleProducts).map((item, index) => (
           <motion.div
@@ -252,7 +262,7 @@ const ShopCategory = (props) => {
         ))}
       </div>
 
-      {/* Load More Button */}
+      {/* Load More Button (Existing) */}
       {visibleProducts < sortedProducts.length && (
         <motion.button
           initial={{ opacity: 0 }}
@@ -266,7 +276,7 @@ const ShopCategory = (props) => {
         </motion.button>
       )}
 
-      {/* No Products */}
+      {/* No Products (Existing) */}
       {sortedProducts.length === 0 && (
         <p className="text-gray-500 mt-20 text-lg">No products found matching the criteria.</p>
       )}

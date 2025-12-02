@@ -42,9 +42,10 @@ function App() {
         
         <Route path='/' element={<Shop/>}/>
         <Route path='/About' element={<About/>}/>
-        <Route path='/rings' element={<ShopCatagory banner = {headphone_banner} category = "rings"/>}/>
+        <Route path='/:categoryName' element={<ShopCatagory/>}/>
+        {/* <Route path='/rings' element={<ShopCatagory banner = {headphone_banner} category = "rings"/>}/>
         <Route path='/Airpods' element={<ShopCatagory banner = {airpod_banner} category = "Airpod"/>}/>
-        <Route path='/Watches' element={<ShopCatagory banner = {watch_banner} category = "Watch"/>}/>
+        <Route path='/Watches' element={<ShopCatagory banner = {watch_banner} category = "Watch"/>}/> */}
         <Route path='/Contact' element={<Contact/>}/>
         <Route path='/Product/:ProductId' element={<Product/>}>
           {/* <Route path=':ProductId' element={<Product/>}/> */}
