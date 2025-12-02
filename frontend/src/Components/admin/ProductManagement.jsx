@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
   import axios from "axios";
-  import useContext from "react";
   import { ShopContext } from "../../Context/ShopContext.jsx";
 
 
@@ -90,10 +89,11 @@ import React, { useEffect, useState, useRef } from "react";
 
 
   const ProductManagement = () => {
+    const { API_BASE_URL } = useContext(ShopContext);
     const token = localStorage.getItem("auth-token");
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
-    const { API_BASE_URL } = useContext(ShopContext);
+    
 
     const [form, setForm] = useState({
       name: "",
