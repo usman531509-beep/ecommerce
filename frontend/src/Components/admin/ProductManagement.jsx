@@ -94,7 +94,6 @@ import React, { useEffect, useState, useRef, useContext } from "react";
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     
-
     const [form, setForm] = useState({
       name: "",
       description: "", 
@@ -107,6 +106,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
       variations: [],
       colors: [],
       sizes: [],
+      existingImages: [], 
     });
 
     const [variation, setVariation] = useState({
@@ -120,7 +120,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
     const [colorInput, setColorInput] = useState("");
     const [sizeInput, setSizeInput] = useState("");
 
-    const [images, setImages] = useState([]);
+    const [images, setImages] = useState([]); // This holds NEW files
     const [editingProduct, setEditingProduct] = useState(null);
     const [message, setMessage] = useState(null); 
 
@@ -208,8 +208,14 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 
     //Handle file input change
     const handleImageChange = (e) => {
-      const files = Array.from(e.target.files || []);
-      setImages((prev) => [...prev, ...files]);
+      const newFiles = Array.from(e.target.files || []); 
+      setImages((prev) => [...prev, ...newFiles]);
+      e.target.value = null; 
+    };
+    
+    // NEW: Remove a newly selected image (file)
+    const handleRemoveNewImage = (index) => {
+        setImages(prev => prev.filter((_, i) => i !== index));
     };
 
     // Submit form
@@ -222,21 +228,20 @@ import React, { useEffect, useState, useRef, useContext } from "react";
         
         Object.entries(form).forEach(([key, value]) => {
           if (Array.isArray(value)) {
-            
+            // Variations, colors, sizes, existingImages, etc.
             formData.append(key, JSON.stringify(value));
           } else {
-            
+            // Other fields
             formData.append(key, value);
           }
         });
-
+        
      
-        images.forEach((file) => formData.append("images", file));
-
+        images.forEach((file) => formData.append("images", file)); // New files
+        
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
           },
         };
 
@@ -265,6 +270,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
           variations: [],
           colors: [],
           sizes: [],
+          existingImages: [], // Reset
         });
 
         setImages([]);
@@ -299,15 +305,16 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 
       setForm({
         ...product,
-
         description: product.description || "", 
         category: product.category?._id || product.category,
         colors: product.colors || [],
         sizes: product.sizes || [],
         variations: product.variations || [],
+        // Existing images ko separate state mein daalna
+        existingImages: product.images || [], 
       });
 
-      setImages([]);
+      setImages([]); // New images are reset
     };
 
     return (
@@ -328,7 +335,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
           onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 sm:p-6 rounded-lg shadow-md mb-10"
         >
-          {/* Top Inputs */}
+          {/* Top Inputs (Same as before) */}
           <input
             name="name"
             value={form.name}
@@ -380,7 +387,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
             className="border p-2 rounded focus:ring-blue-500 focus:border-blue-500"
           />
 
-          {/* Checkboxes */}
+          {/* Checkboxes (Same as before) */}
           <div className="flex items-center space-x-6 p-2 border bg-gray-50 rounded col-span-1">
             <label className="flex items-center space-x-2 cursor-pointer">
               <span className="font-medium text-gray-700">Featured:</span>
@@ -411,7 +418,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
             placeholder="Product details, features, specifications, etc. (Bold and Italic formatting supported)"
           />
 
-          {/* Colors Input */}
+          {/* Colors Input (Same as before) */}
           <div className="col-span-full">
             <h3 className="font-semibold mb-1">Product Colors</h3>
             <div className="flex gap-2">
@@ -442,7 +449,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
             </div>
           </div>
 
-          {/* Sizes Input */}
+          {/* Sizes Input (Same as before) */}
           <div className="col-span-full">
             <h3 className="font-semibold mb-1">Product Sizes</h3>
             <div className="flex gap-2">
@@ -473,7 +480,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
             </div>
           </div>
 
-          {/* FILE UPLOAD */}
+          {/* FILE UPLOAD & IMAGE MANAGEMENT (WITH PREVIEWS) */}
           <div className="col-span-full">
             <label className="block mb-2 font-semibold text-gray-700">Upload Images:</label>
 
@@ -486,34 +493,73 @@ import React, { useEffect, useState, useRef, useContext } from "react";
               className="border p-2 w-full rounded focus:ring-blue-500 focus:border-blue-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-[#ff4141] hover:file:bg-red-100"
             />
 
-            {(images.length > 0 || (editingProduct && editingProduct.images && editingProduct.images.length > 0)) && (
-              <div className="mt-2 flex flex-wrap gap-2 p-2 bg-gray-50 rounded">
-                <span className="font-medium text-sm text-gray-700 w-full mb-1">
-                    {editingProduct ? 'Current/New Images:' : 'Selected New Images:'}
+            {(form.existingImages.length > 0 || images.length > 0) && (
+              <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <span className="font-bold text-gray-800 mb-4 block">
+                    Image Previews:
                 </span>
                
-                {editingProduct && editingProduct.images && editingProduct.images.map((imgUrl, i) => (
-                    <p
-                        key={`existing-${i}`}
-                        className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded"
-                    >
-                        Existing Image {i + 1}
-                    </p>
-                ))}
-            
-                {images.map((file, i) => (
-                  <p
-                    key={`new-${i}`}
-                    className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded"
-                  >
-                    New: {file.name}
-                  </p>
-                ))}
+                <div className="flex flex-wrap gap-4">
+                    {/* Existing Images Preview */}
+                    {form.existingImages.length > 0 && (
+                        <div className="w-full">
+                            <h4 className="text-sm font-semibold text-gray-600 mb-2 border-b pb-1">Saved Images:</h4>
+                            <div className="flex flex-wrap gap-3">
+                                {form.existingImages.map((img, i) => (
+                                    <div 
+                                        key={img.url || i}
+                                        className="relative w-20 h-20 border border-green-400 rounded-lg overflow-hidden shadow-md"
+                                        title={`Saved Image ${i + 1}`}
+                                    >
+                                        <img 
+                                            src={img.url} 
+                                            alt={`Existing ${i + 1}`} 
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <span className="absolute bottom-0 right-0 bg-green-500 text-white text-[10px] px-1 rounded-tl">Saved</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    
+                    {/* New Images Preview (Removable) */}
+                    {images.length > 0 && (
+                        <div className="w-full mt-4">
+                            <h4 className="text-sm font-semibold text-gray-600 mb-2 border-b pb-1">New Uploads (Click 'X' to remove):</h4>
+                            <div className="flex flex-wrap gap-3">
+                                {images.map((file, i) => (
+                                    <div 
+                                        key={i}
+                                        className="relative w-20 h-20 border border-purple-400 rounded-lg overflow-hidden shadow-md group"
+                                        title={file.name}
+                                    >
+                                        <img 
+                                            src={URL.createObjectURL(file)} // 🛑 Preview using local object URL
+                                            alt={`New ${i + 1}`} 
+                                            className="w-full h-full object-cover"
+                                        />
+                                        {/* Remove Button */}
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveNewImage(i)}
+                                            className="absolute top-0 right-0 bg-red-600 text-white rounded-bl-lg w-5 h-5 flex items-center justify-center text-xs opacity-80 hover:opacity-100 transition"
+                                            title="Remove this new file"
+                                        >
+                                            <span className="font-bold">X</span>
+                                        </button>
+                                        <span className="absolute bottom-0 left-0 bg-purple-500 text-white text-[10px] px-1 rounded-tr">New</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
               </div>
             )}
           </div>
 
-          {/* Variations */}
+          {/* Variations (Same as before) */}
           <div className="col-span-full border-t pt-4 mt-4">
             <h3 className="text-xl font-bold text-gray-800 mb-2">Product Variations</h3>
 
@@ -583,7 +629,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
             </ul>
           </div>
 
-          {/* Submit Button */}
+          {/* Submit Button (Same as before) */}
           <button
             type="submit"
             className="col-span-full bg-[#ff4141] hover:bg-red-600 text-white px-6 py-3 rounded-lg font-semibold text-lg shadow-md transition"
@@ -592,13 +638,14 @@ import React, { useEffect, useState, useRef, useContext } from "react";
           </button>
         </form>
 
-        {/* Product Table */}
+        {/* Product Table (Same as before) */}
         <h2 className="text-2xl font-bold text-gray-800 mb-4 border-b pb-2">All Products</h2>
 
         <div className="overflow-x-auto bg-white shadow-xl rounded-lg">
           <table className="min-w-full text-left text-sm">
             <thead className="bg-gray-100 text-gray-600 uppercase tracking-wider">
               <tr>
+                <th className="py-3 px-4">Sr. No</th>
                 <th className="py-3 px-4">Name</th>
                 <th className="py-3 px-4">Category</th>
                 <th className="py-3 px-4">Price</th>
@@ -612,6 +659,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
             <tbody>
               {products.map((p) => (
                 <tr key={p._id} className="border-t hover:bg-red-50/50 transition duration-150">
+                  <td className="py-3 px-4">{products.indexOf(p) + 1}</td>
                   <td className="py-3 px-4 font-medium text-gray-800">{p.name}</td>
                   <td className="py-3 px-4 text-gray-600">{p.category?.name || "N/A"}</td>
                   <td className="py-3 px-4 font-semibold text-red-600">Rs {p.price}</td>
