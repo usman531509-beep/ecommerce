@@ -14,7 +14,7 @@ const BACKGROUND_LIGHT = "bg-[#fff0f7]";
 const About = () => {
   return (
    
-    <div className="font-[Poppins] bg-white overflow-hidden pt-16">
+    <div className="font-[Poppins] bg-white overflow-hidden pt-16 bg-gradient-to-b from-[#fde1ff] to-[#e1ffea22]">
       
      
       <section className="relative flex flex-col md:flex-row items-center justify-between py-24 md:py-36 px-6 sm:px-12 lg:px-24">
@@ -60,8 +60,8 @@ const About = () => {
         </motion.div>
       </section>
 
-      {/* 🎯 Brand Pillars (Core Values) Section */}
-      <section className={`py-24 px-6 sm:px-12 lg:px-24 text-center ${BACKGROUND_LIGHT}`}>
+      
+      <section className={`py-24 px-6 sm:px-12 lg:px-24 text-center`}>
         <motion.h2
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}

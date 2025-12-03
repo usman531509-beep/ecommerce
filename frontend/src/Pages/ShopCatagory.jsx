@@ -97,7 +97,7 @@ const ShopCategory = (props) => {
 
   // --- Rendering ---
   return (
-    <div className="w-full flex flex-col items-center px-4 md:px-10 pt-32 pb-16 bg-white min-h-screen"> 
+    <div className="w-full flex flex-col bg-gradient-to-b from-[#fde1ff] to-[#e1ffea22] items-center px-4 md:px-10 pt-32 pb-16 bg-white min-h-screen"> 
       
       {/* 🚀 Category Header */}
       <motion.div 

@@ -3,7 +3,7 @@ import axios from "axios";
 import { ShopContext } from "../Context/ShopContext";
 
 const Checkout = () => {
-  const { cartItems, clearCart } = useContext(ShopContext);
+  const { cartItems, clearCart, API_BASE_URL } = useContext(ShopContext);
 
   const [customer, setCustomer] = useState({ name: "", email: "", phone: "" });
   const [shipping, setShipping] = useState({ address: "", city: "", postalCode: "", country: "" });
@@ -39,7 +39,7 @@ const Checkout = () => {
     };
 
     try {
-      await axios.post("http://localhost:4000/api/orders", orderData);
+      await axios.post(`${API_BASE_URL}/api/orders`, orderData);
       console.log(orderData);
       
       alert("Order placed successfully!");

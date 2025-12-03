@@ -1,7 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import path from "path";
+import path from "path"; // Iski ab zaroorat nahi, lekin rehne dete hain
 import connectDB from "./Config/Db.js";
 import { notFound, errorHandler } from "./Middleware/errorMiddleware.js";
 
@@ -21,8 +21,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-//Serve uploaded images publicly
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+// 🛑 REMOVED: Local static file serving middleware remove kar diya gaya hai.
+//           Images ab Cloudinary se serve hongi, isliye iski zaroorat nahi hai.
+// app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 //Default route
 app.get("/", (req, res) => {

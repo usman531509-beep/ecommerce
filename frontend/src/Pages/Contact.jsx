@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
 import axios from "axios";
+import { useContext } from "react";
+import { ShopContext } from "../Context/ShopContext.jsx";
+
+// const API_BASE_URL = "http://localhost:4000/api/contact"; 
 
 
-const API_BASE_URL = "http://localhost:4000/api/contact"; 
 
 const Contact = () => {
+  const API_BASE_URL = useContext(ShopContext);
     // New state for form data and submission status
     const [formData, setFormData] = useState({
         name: "",
@@ -46,7 +50,7 @@ const Contact = () => {
         setSubmissionStatus({ loading: true, message: "", success: null });
 
         try {
-            const response = await axios.post(`${API_BASE_URL}`, formData);
+            const response = await axios.post(`${API_BASE_URL}/api/contact`, formData);
             setSubmissionStatus({ loading: false, message: "Message sent successfully! Our team will contact you shortly", success: true });
             setFormData({ name: "", email: "", message: "" }); 
         } catch (error) {

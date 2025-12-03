@@ -1,5 +1,9 @@
 import Product from "../models/Product.js";
 
+// Ensure ki aapka .env file load ho raha hai agar aap .env variables use karte hain
+import dotenv from 'dotenv';
+dotenv.config();
+
 export const addProduct = async (req, res) => {
   try {
     const {
@@ -35,7 +39,8 @@ export const addProduct = async (req, res) => {
     let images = [];
     if (req.files && req.files.length > 0) {
       images = req.files.map((file) => ({
-        url: `${process.env.API_BASE_URL}/uploads/${file.filename}`,
+        // 🛑 FIX: file.path contains the direct, permanent Cloudinary URL
+        url: file.path, 
         alt: name,
       }));
     }
@@ -139,7 +144,8 @@ export const updateProduct = async (req, res) => {
     // Handle uploaded images
     if (req.files && req.files.length > 0) {
       const newImages = req.files.map((file) => ({
-        url: `${process.env.API_BASE_URL}/uploads/${file.filename}`,
+        // 🛑 FIX: file.path contains the direct, permanent Cloudinary URL
+        url: file.path, 
         alt: name || product.name,
       }));
       product.images = [...product.images, ...newImages];
@@ -181,6 +187,9 @@ export const deleteProduct = async (req, res) => {
 
     if (!product)
       return res.status(404).json({ message: "Product not found" });
+
+    // 💡 OPTIONAL: Agar aap Cloudinary se image delete karna chahte hain, 
+    // toh yahan Cloudinary ka destroy method use karna hoga.
 
     await product.deleteOne();
 
