@@ -1,18 +1,21 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from "lucide-react";
 import axios from "axios";
 import { useContext } from "react";
 import { ShopContext } from "../Context/ShopContext.jsx";
 
-// const API_BASE_URL = "http://localhost:4000/api/contact"; 
-
-
 
 const Contact = () => {
-  const API_BASE_URL = useContext(ShopContext);
-    // New state for form data and submission status
-    const [formData, setFormData] = useState({
+  
+  const { API_BASE_URL } = useContext(ShopContext) || {}; 
+
+
+  if (!API_BASE_URL) {
+     console.error("API_BASE_URL is not available from ShopContext.");
+  }
+
+  const [formData, setFormData] = useState({
         name: "",
         email: "",
         message: "",
@@ -47,20 +50,37 @@ const Contact = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!API_BASE_URL) {
+            setSubmissionStatus({ 
+                loading: false, 
+                message: "API service is unavailable. Please check configuration.", 
+                success: false 
+            });
+            return;
+        }
+
         setSubmissionStatus({ loading: true, message: "", success: null });
 
         try {
+            
             const response = await axios.post(`${API_BASE_URL}/api/contact`, formData);
-            setSubmissionStatus({ loading: false, message: "Message sent successfully! Our team will contact you shortly", success: true });
-            setFormData({ name: "", email: "", message: "" }); 
-        } catch (error) {
-            console.error("Error submitting contact form:", error);
+            
             setSubmissionStatus({ 
                 loading: false, 
-                message: error.response?.data?.message || "Failed to send message. Please try again later.", 
+                message: response.data.message || "Your message has been sent successfully!", 
+                success: true 
+            });
+            setFormData({ name: "", email: "", message: "" }); 
+        } catch (error) {
+            console.error("Contact Form Submission Error:", error);
+            setSubmissionStatus({ 
+                loading: false, 
+                
+                message: error.response?.data?.message || `Failed to send message: ${error.message}`, 
                 success: false 
             });
-        }
+        }       
     };
 
 
@@ -100,7 +120,7 @@ const Contact = () => {
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <input
               type="text"
-              name="name" // Added name attribute
+              name="name" 
               placeholder="Your Name"
               value={formData.name}
               onChange={handleChange}
@@ -109,7 +129,7 @@ const Contact = () => {
             />
             <input
               type="email"
-              name="email" // Added name attribute
+              name="email" 
               placeholder="Your Email"
               value={formData.email}
               onChange={handleChange}
@@ -118,7 +138,7 @@ const Contact = () => {
             />
             <textarea
               rows="5"
-              name="message" // Added name attribute
+              name="message" 
               placeholder="Your Message"
               value={formData.message}
               onChange={handleChange}
@@ -143,9 +163,9 @@ const Contact = () => {
               type="submit"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              disabled={submissionStatus.loading} // Disable button while loading
+              disabled={submissionStatus.loading || !API_BASE_URL} // Disable if API URL is missing
               className={`text-white font-semibold py-3 rounded-full transition-all duration-300 shadow-md ${
-                submissionStatus.loading 
+                (submissionStatus.loading || !API_BASE_URL)
                     ? 'bg-gray-400 cursor-not-allowed' 
                     : 'bg-[#ff4141] hover:bg-[#e63b3b]'
               }`}
@@ -155,7 +175,7 @@ const Contact = () => {
           </form>
         </motion.div>
 
-        {/* Contact Info */}
+        {/* Contact Info (No changes needed here) */}
         <motion.div
           initial={{ opacity: 0, x: 60 }}
           animate={{ opacity: 1, x: 0 }}
