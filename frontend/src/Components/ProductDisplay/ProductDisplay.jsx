@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { ShopContext } from "../../Context/ShopContext";
 import star_icon from "../Assests/star_icon.png";
+import { Link } from "react-router-dom";
 
 const ProductDisplay = ({ product }) => {
   const { addToCart, API_BASE_URL } = useContext(ShopContext);
@@ -91,9 +92,7 @@ const ProductDisplay = ({ product }) => {
       {showPopup && (
         <div className="fixed top-5 right-5 bg-green-600 text-white px-5 py-3 rounded-lg shadow-xl z-50">
           <p className="font-semibold">Product added to cart!</p>
-          <a href="/cart" className="underline text-sm mt-1 inline-block">
-            Go to Cart →
-          </a>
+          <Link to="/cart" className="underline mt-2 inline-block">Go to Cart</Link>
         </div>
       )}
 

@@ -3,8 +3,14 @@ import axios from "axios";
 import OrderSlip from "./Slip";
 import { ShopContext } from "../../Context/ShopContext.jsx";
 import { useContext } from "react";
+import { Search, RotateCcw } from "lucide-react"; 
+
 const AdminOrders = () => {
+  // Original data fetched from API
+  const [originalOrders, setOriginalOrders] = useState([]); 
+  // Displayed data (which is filtered)
   const [orders, setOrders] = useState([]);
+  
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [loading, setLoading] = useState(true); 
   const [slipOrder, setSlipOrder] = useState(null);
@@ -12,18 +18,33 @@ const AdminOrders = () => {
   const token = localStorage.getItem("auth-token");
   const API_URL = `${API_BASE_URL}/api/orders`; 
   
+  // STATE FOR FILTERS
+  const [filters, setFilters] = useState({
+    status: "",
+    searchQuery: "", // For customer name/phone
+    startDate: "",
+    endDate: "",
+  });
 
+  const availableStatuses = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
+
+  
+  // --- 1. DATA FETCHING (Only once on load) ---
   const fetchOrders = async () => {
     try {
       setLoading(true); 
-
+      // NOTE: Ab hum filters ko API request mein nahi bhejenge.
       const res = await axios.get(API_URL, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setOrders(res.data);
+      
+      // Original data store karein
+      setOriginalOrders(res.data);
+      // Displayed data ko bhi set karein
+      setOrders(res.data); 
+
     } catch (error) {
       console.error("Error fetching orders:", error);
-     
     } finally {
         setLoading(false); 
     }
@@ -31,7 +52,74 @@ const AdminOrders = () => {
 
   useEffect(() => {
     fetchOrders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  
+  // --- 2. FILTERING LOGIC (Runs whenever filters or original data changes) ---
+  useEffect(() => {
+      let filtered = originalOrders;
+      
+      // A. Status Filter
+      if (filters.status) {
+          filtered = filtered.filter(order => order.status === filters.status);
+      }
+      
+      // B. Search (Name or Phone) Filter
+      if (filters.searchQuery) {
+          const query = filters.searchQuery.toLowerCase();
+          filtered = filtered.filter(order => {
+              const name = order.customerInfo?.name?.toLowerCase() || '';
+              const phone = order.customerInfo?.phone?.toLowerCase() || '';
+              const orderId = order._id.toLowerCase() || ''; // ID se bhi search ho sakta hai
+              
+              return name.includes(query) || phone.includes(query) || orderId.includes(query);
+          });
+      }
+      
+      // C. Date Range Filter
+      if (filters.startDate || filters.endDate) {
+          const start = filters.startDate ? new Date(filters.startDate) : null;
+          // End date ko agle din ki shuruat tak extend karein taaki poora din include ho
+          let end = filters.endDate ? new Date(filters.endDate) : null;
+          if (end) {
+              end.setDate(end.getDate() + 1);
+          }
+          
+          filtered = filtered.filter(order => {
+              const orderDate = new Date(order.createdAt);
+              let pass = true;
+              
+              if (start && orderDate < start) {
+                  pass = false;
+              }
+              if (end && orderDate >= end) {
+                  pass = false;
+              }
+              return pass;
+          });
+      }
+      
+      setOrders(filtered);
+      
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, originalOrders]);
+
+
+  // Handler for filter changes
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({ ...prev, [name]: value }));
+  };
+  
+  // Handler for resetting filters
+  const handleResetFilters = () => {
+      setFilters({
+          status: "",
+          searchQuery: "",
+          startDate: "",
+          endDate: "",
+      });
+  };
 
   
   const getStatusClasses = (status) => {
@@ -63,6 +151,7 @@ const AdminOrders = () => {
             { headers: { Authorization: `Bearer ${token}` } }
         );
        
+        // Status update ke baad data ko dobara fetch karein
         fetchOrders(); 
         if (selectedOrder && selectedOrder._id === orderId) {
             setSelectedOrder(prev => ({ ...prev, status: newStatus }));
@@ -81,7 +170,78 @@ const AdminOrders = () => {
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
       <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">📦 All Orders</h2>
       
-      
+      {/* FILTERS UI */}
+      <div className="bg-white p-4 rounded-xl shadow-lg mb-6 border border-gray-200">
+        <h3 className="font-semibold text-gray-700 mb-3 border-b pb-2">Filter & Search Orders (Client-Side)</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+          
+          {/* Status Filter */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <select
+              name="status"
+              value={filters.status}
+              onChange={handleFilterChange}
+              className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 bg-white"
+            >
+              <option value="">All Statuses</option>
+              {availableStatuses.map(status => (
+                  <option key={status} value={status}>{status}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Search by Customer */}
+          <div className="lg:col-span-2 relative">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Search (Name/Phone/ID)</label>
+            <input
+              type="text"
+              name="searchQuery"
+              placeholder="Search Customer Name, Phone or ID..."
+              value={filters.searchQuery}
+              onChange={handleFilterChange}
+              className="w-full p-2 pl-10 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500"
+            />
+            <Search className="absolute left-3 top-9 w-4 h-4 text-gray-400" />
+          </div>
+
+          {/* Date Range Start */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+            <input
+              type="date"
+              name="startDate"
+              value={filters.startDate}
+              onChange={handleFilterChange}
+              className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+
+          {/* Date Range End */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+            <input
+              type="date"
+              name="endDate"
+              value={filters.endDate}
+              onChange={handleFilterChange}
+              className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500"
+            />
+          </div>
+          
+           {/* Reset Button */}
+          <button
+              onClick={handleResetFilters}
+              className="col-span-1 lg:col-span-1 p-2 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition flex items-center justify-center space-x-2"
+          >
+              <RotateCcw className="w-4 h-4" />
+              <span>Reset Filters</span>
+          </button>
+        </div>
+      </div>
+      {/* END FILTERS UI */}
+
+
       {loading && <p className="text-center text-red-600 font-semibold mt-8">Orders data load ho raha hai...</p>}
 
       
@@ -108,7 +268,7 @@ const AdminOrders = () => {
                 <tr>
                   
                   <td colSpan="8" className="p-4 text-center text-gray-500">
-                    No orders found.
+                    No orders found matching the current filters.
                   </td>
                 </tr>
               ) : (
@@ -194,7 +354,6 @@ const AdminOrders = () => {
                           {selectedOrder.status}
                         </span>
                     </p>
-                    {/* ADDED DATE HERE */}
                     <p><strong>Date:</strong> {new Date(selectedOrder.createdAt).toLocaleDateString()}</p>
                     <p><strong>Total:</strong> <span className="text-red-600 font-bold">Rs {selectedOrder.totalPrice}</span></p>
                 </div>
@@ -280,8 +439,8 @@ const AdminOrders = () => {
         </div>
       )}
       {slipOrder && (
-  <OrderSlip order={slipOrder} onClose={() => setSlipOrder(null)} />
-)}
+        <OrderSlip order={slipOrder} onClose={() => setSlipOrder(null)} />
+      )}
 
     </div>
 

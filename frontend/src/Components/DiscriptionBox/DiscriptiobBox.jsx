@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useContext } from "react";
+import { ShopContext } from "../../Context/ShopContext";
 
 const DescriptionBox = ({ product }) => {
   const [activeTab, setActiveTab] = useState("description");
   const [reviews, setReviews] = useState([]);
+  const { API_BASE_URL } = useContext(ShopContext);
 
   // Fetch reviews
   const fetchReviews = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:4000/api/reviews/product/${product._id}`
+        `${API_BASE_URL }/api/reviews/product/${product._id}`
       );
       setReviews(res.data);
     } catch (err) {

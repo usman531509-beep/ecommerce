@@ -14,6 +14,8 @@ const CartItems = () => {
   const [shipping, setShipping] = useState({ address: "", city: "", postalCode: "", country: "" });
   const {API_BASE_URL} = useContext(ShopContext);
   const [orderPlaced, setOrderPlaced] = useState(false); 
+  // 1. NEW STATE: Order ID store karne ke liye
+  const [orderId, setOrderId] = useState(null); 
   
   const totalAmount = getTotalCartAmount();
 
@@ -52,15 +54,19 @@ const CartItems = () => {
     };
 
     try {
-    
       
-      await axios.post(`${API_BASE_URL}/api/orders`, orderData);
-      console.log("Order Placed:", orderData);
+      // 2. BACKEND RESPONSE CAPTURE
+      const response = await axios.post(`${API_BASE_URL}/api/orders`, orderData);
+      const newOrder = response.data; // Assuming backend returns the newly created order object
       
-    
+      console.log("Order Placed:", newOrder);
+      
+      // 3. STORE ORDER ID
+      // MongoDB ID typically uses _id, or if you create a custom ID, use that field.
+      setOrderId(newOrder._id || newOrder.customOrderId || newOrder.id); 
+      
       clearCart();
       setOrderPlaced(true);
-     
       
     } catch (error) {
       console.error("Order Error:", error);
@@ -92,7 +98,10 @@ const CartItems = () => {
         </div>
         <div className="flex flex-col items-center">
           <ShoppingBag className="w-8 h-8 text-pink-500 mb-2" />
-          <p className="font-semibold">Order ID: #{Math.floor(Math.random() * 100000) + 10000}</p>
+          <p className="font-semibold">
+              {/* 4. DISPLAY ACTUAL ORDER ID */}
+              Order ID: <span className="text-purple-600 break-all">{orderId || 'Loading...'}</span> 
+          </p>
           <p className="text-sm">Check your email for confirmation.</p>
         </div>
       </div>
@@ -122,6 +131,8 @@ const CartItems = () => {
           <OrderConfirmation />
         ) : (
           <>
+            {/* ... (rest of the cart items display and form) ... */}
+            
             <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
               🛒 Your Shopping Cart
             </h1>
