@@ -4,6 +4,7 @@ dotenv.config();
 
 export const addProduct = async (req, res) => {
   try {
+
     const {
       name,
       description,
@@ -16,8 +17,10 @@ export const addProduct = async (req, res) => {
       sizes,
       isFeatured,
       isActive,
+      isNewArrival,
     } = req.body;
-
+    
+    
     const parsedVariations =
       variations && typeof variations === "string"
         ? JSON.parse(variations)
@@ -62,8 +65,9 @@ export const addProduct = async (req, res) => {
       variations: parsedVariations,
       isFeatured: isFeatured || false,
       isActive: isActive ?? true,
+      isNewArrival: isNewArrival || false,
     });
-
+    
     res.status(201).json({
       message: "Product created successfully 👍",
       product,
@@ -121,6 +125,7 @@ export const updateProduct = async (req, res) => {
       sizes,
       isFeatured,
       isActive,
+      isNewArrival,
     } = req.body;
 
     const product = await Product.findById(req.params.id);
@@ -164,6 +169,7 @@ export const updateProduct = async (req, res) => {
 
     if (isFeatured !== undefined) product.isFeatured = isFeatured;
     if (isActive !== undefined) product.isActive = isActive;
+    if (isNewArrival !== undefined) product.isNewArrival = isNewArrival;
 
     const updatedProduct = await product.save();
 

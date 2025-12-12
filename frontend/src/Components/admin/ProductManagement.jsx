@@ -126,11 +126,13 @@ const ProductManagement = () => {
     stock: "",
     isFeatured: false,
     isActive: true,
+    isNewArrival: false,
     variations: [],
     colors: [],
     sizes: [],
     existingImages: [], 
   });
+
 
   const [variation, setVariation] = useState({
     name: "",
@@ -341,6 +343,13 @@ const ProductManagement = () => {
         displayMessage("Product updated successfully!");
       } else {
         await axios.post(`${API_BASE_URL}/api/products`, formData, config);
+       console.log("--- FormData Content ---");
+
+// entries() method تمام key-value pairs کا ایک iterator دیتا ہے۔
+for (const [key, value] of formData.entries()) {
+  console.log(`${key}: ${value}`);
+}
+        
         displayMessage("Product added successfully!");
       }
 
@@ -354,6 +363,7 @@ const ProductManagement = () => {
         stock: "",
         isFeatured: false,
         isActive: true,
+        isNewArrival: false,
         variations: [],
         colors: [],
         sizes: [],
@@ -400,6 +410,9 @@ const ProductManagement = () => {
       variations: product.variations || [],
       // Existing images ko separate state mein daalna
       existingImages: product.images || [], 
+      isActive: product.isActive !== undefined ? product.isActive : true,
+      isNewArrival: product.isNewArrival !== undefined ? product.isNewArrival : false,
+      isFeatured: product.isFeatured !== undefined ? product.isFeatured : false,
     });
 
     setImages([]); // New images are reset
@@ -493,6 +506,16 @@ const ProductManagement = () => {
               type="checkbox"
               name="isActive"
               checked={form.isActive}
+              onChange={handleChange}
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+            />
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <span className="font-medium text-gray-700">New Arrival:</span>
+            <input
+              type="checkbox"
+              name="isNewArrival"
+              checked={form.isNewArrival}
               onChange={handleChange}
               className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />

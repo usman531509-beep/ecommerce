@@ -62,6 +62,7 @@ const productSchema = new mongoose.Schema(
     stock: { type: Number, default: 0 },
     isFeatured: { type: Boolean, default: false },
     isActive: { type: Boolean, default: true },
+    isNewArrival: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
