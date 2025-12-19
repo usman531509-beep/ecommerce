@@ -48,7 +48,9 @@ export const updateOrderStatus = async (req, res) => {
   const orderId = req.params.id; 
   const { status } = req.body; 
 
-  const validStatuses = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"]; 
+  // 💡 FIX 1: Add "Returned" to the list of valid statuses
+  const validStatuses = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Returned"]; 
+  
   if (!validStatuses.includes(status)) {
     return res.status(400).json({ message: `Invalid status provided. Must be one of: ${validStatuses.join(', ')}` });
   }
@@ -64,9 +66,12 @@ export const updateOrderStatus = async (req, res) => {
     order.status = status;
 
    
-    if (status === 'Delivered' && !order.deliveredAt) {
+    // ⚠️ NOTE: `deliveredAt` field is not defined in your Order model.
+    // If you need it, please add it to the schema. Removing the logic here to prevent runtime errors.
+    /* if (status === 'Delivered' && !order.deliveredAt) {
       order.deliveredAt = Date.now();
     }
+    */
     
   
     const updatedOrder = await order.save();

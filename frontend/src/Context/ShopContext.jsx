@@ -80,6 +80,7 @@ const ShopContextProvider = (props) => {
   const [user, setUser] = useState(localStorage.getItem("auth-token") || null);
   const [loadingUser, setLoadingUser] = useState(false);
   const API_BASE_URL = "https://ecommerce-w9sv.onrender.com";
+  // const API_BASE_URL = "http://localhost:4000";
   //Fetch all products
   useEffect(() => {
     const fetchProducts = async () => {
@@ -155,19 +156,47 @@ const ShopContextProvider = (props) => {
   //Remove from cart
   const removeFromCart = (productId) => {
     setCartItems((prev) =>
-      prev.filter((item) => item._id !== productId)
+      prev
+        .map((item) =>
+          item._id === productId ? { ...item, qty: item.qty - 1 } : item
+        )
+        .filter((item) => item.qty > 0)
     );
   };
 
   //Clear cart
   const clearCart = () => setCartItems([]);
 
-  //Total cart price
-  const getTotalCartAmount = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.qty, 0);
-  };
+  
 
-  //Total item count
+const getDiscountedPrice = (item) => {
+   
+    if (item.discountPrice && item.discountPrice > 0 && item.discountPrice < item.price) {
+        return item.discountPrice;
+    }
+
+    
+    if (item.currentOffer && item.currentOffer.discountPercentage) {
+        const originalPrice = parseFloat(item.price);
+        const discount = parseFloat(item.currentOffer.discountPercentage);
+        if (discount > 0) {
+            return originalPrice * (1 - discount / 100);
+        }
+    }
+    
+    // Agar koi discount nahi hai, to original price return karein.
+    return parseFloat(item.price);
+};
+
+
+const getTotalCartAmount = () => {
+    return cartItems.reduce((total, item) => {
+        const finalPrice = getDiscountedPrice(item);
+        return total + finalPrice * item.qty;
+    }, 0);
+};
+
+
   const getTotalCartItem = () => {
     return cartItems.reduce((total, item) => total + item.qty, 0);
   };

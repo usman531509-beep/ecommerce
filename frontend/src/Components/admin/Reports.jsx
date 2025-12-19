@@ -2,13 +2,27 @@ import React, { useEffect, useState, useMemo, useContext } from 'react';
 import axios from 'axios';
 import { ShopContext } from "../../Context/ShopContext.jsx";
 
+// Helper function for status colors (matching AdminOrders for consistency)
+const getStatusClasses = (status) => {
+    switch (status) {
+        case "Delivered": return "text-green-800 bg-green-100 border-green-300";
+        case "Cancelled": return "text-red-800 bg-red-100 border-red-300";
+        case "Processing": return "text-yellow-800 bg-yellow-100 border-yellow-300";
+        case "Shipped": return "text-blue-800 bg-blue-100 border-blue-300";
+        case "Returned": return "text-purple-800 bg-purple-100 border-purple-300"; // Added Returned
+        case "Pending": return "text-gray-800 bg-gray-100 border-gray-300";
+        default: return "text-gray-800 bg-gray-100 border-gray-300";
+    }
+};
+
+
 const AdminReports = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("auth-token");
   const { API_BASE_URL } = useContext(ShopContext);
-  // const API_URL = "http://localhost:4000/api/orders"; 
+  
 
   const fetchOrders = async () => {
     try {
@@ -36,22 +50,28 @@ const AdminReports = () => {
     const totalOrderValue = orders.reduce((acc, order) => acc + order.totalPrice, 0);
 
     
-    const validOrders = orders.filter(order => order.status === 'Delivered' || order.status === 'Shipped');
+    // 💡 FIX 1: Filter out 'Cancelled' AND 'Returned' orders for Revenue calculation
+    const revenueGeneratingOrders = orders.filter(order => 
+        (order.status === 'Delivered' || order.status === 'Shipped')
+        // Ensure no cancelled or returned orders are counted in revenue
+        && order.status !== 'Cancelled' 
+        && order.status !== 'Returned' 
+    );
 
    
-    const totalRevenue = validOrders.reduce((acc, order) => acc + order.totalPrice, 0);
-    const totalSalesCount = validOrders.length;
+    const totalRevenue = revenueGeneratingOrders.reduce((acc, order) => acc + order.totalPrice, 0);
+    const totalSalesCount = revenueGeneratingOrders.length;
     let totalItemsSold = 0;
 
     
     const productSalesMap = {}; 
 
-    validOrders.forEach(order => {
+    // Calculate items sold/revenue ONLY from revenue-generating orders
+    revenueGeneratingOrders.forEach(order => {
       order.orderItems.forEach(item => {
         totalItemsSold += item.qty;
 
         const productId = item.product?._id || item.product;
-        // Fix: 'Unknown Pr oduct' to 'Unknown Product'
         const itemName = item.name || 'Unknown Product'; 
         const itemRevenue = item.qty * item.price;
 
@@ -137,16 +157,16 @@ const AdminReports = () => {
       textColor: "text-purple-600"
     },
     { 
-      title: "Total Revenue Realized (Sales)",
+      title: "Net Revenue (Delivered/Shipped)",
       value: currencyFormatter(totalRevenue),
-      description: "Delivered/Shipped orders ka revenue.",
+      description: "Delivered/Shipped orders ka final revenue.", // Updated description
       color: "border-red-500",
       textColor: "text-red-600"
     },
     { 
       title: "Total Items Sold",
       value: totalItemsSold.toLocaleString(),
-      description: "Products sold in total.",
+      description: "Products sold in final transactions.", // Updated description
       color: "border-green-500",
       textColor: "text-green-600"
     },
@@ -178,9 +198,13 @@ const AdminReports = () => {
           <h3 className="text-lg font-semibold mb-3 text-gray-700">Order Status Breakdown (Counts)</h3>
           <div className="flex flex-wrap gap-4 text-sm">
             {Object.entries(statusCounts).map(([status, count]) => (
-                <div key={status} className="p-3 bg-gray-50 rounded-lg border">
-                    <p className="text-xs font-medium text-gray-500">{status}</p>
-                    <p className="text-xl font-bold text-gray-800">{count}</p>
+                // 💡 FIX 2: Added dynamic styling for status cards
+                <div 
+                    key={status} 
+                    className={`p-3 rounded-lg border ${getStatusClasses(status)}`}
+                >
+                    <p className="text-xs font-medium">{status}</p>
+                    <p className="text-xl font-bold">{count}</p>
                 </div>
             ))}
             {Object.keys(statusCounts).length === 0 && (

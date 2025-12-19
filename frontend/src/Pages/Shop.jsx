@@ -7,12 +7,15 @@ import NewsLetter from '../Components/Newsletter/NewsLetter'
 import OrderProcess from '../Components/orderProcess/orderProcess'
 import Testimonials from '../Components/Reviews/Testimonials'
 import StatsSection from '../Components/StatsSection/StatsSection'
+import OfferMarquee from '../Components/Marquee/Marquee'
 
 
 const Shop = () => {
   return (
     <div>
+      
       <Main/>
+      <OfferMarquee />
       <Popular/>
       <StatsSection/>
       <Offers/>

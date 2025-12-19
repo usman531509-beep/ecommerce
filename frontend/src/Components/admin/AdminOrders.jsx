@@ -26,7 +26,8 @@ const AdminOrders = () => {
     endDate: "",
   });
 
-  const availableStatuses = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"];
+  // 💡 UPDATE 1: Add "Returned" to available statuses
+  const availableStatuses = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Returned"];
 
   
   // --- 1. DATA FETCHING (Only once on load) ---
@@ -132,6 +133,9 @@ const AdminOrders = () => {
         return "bg-yellow-100 text-yellow-800 border-yellow-300";
       case "Shipped":
         return "bg-blue-100 text-blue-800 border-blue-300";
+      // 💡 UPDATE 2: Added Returned Status Class
+      case "Returned":
+        return "bg-purple-100 text-purple-800 border-purple-300";
       case "Pending":
         return "bg-gray-100 text-gray-800 border-gray-300";
       default:
@@ -145,6 +149,14 @@ const AdminOrders = () => {
         alert("Authentication token missing.");
         return;
     }
+    
+    // Confirmation for sensitive status changes
+    if (newStatus === 'Cancelled' || newStatus === 'Returned') {
+         if (!window.confirm(`Are you sure you want to mark this order as ${newStatus}?`)) {
+             return;
+         }
+    }
+    
     try {
         await axios.put(`${API_URL}/${orderId}`, 
             { status: newStatus },
@@ -185,7 +197,8 @@ const AdminOrders = () => {
               className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-red-500 focus:border-red-500 bg-white"
             >
               <option value="">All Statuses</option>
-              {availableStatuses.map(status => (
+              {/* 💡 UPDATE 3: Use the updated availableStatuses */}
+              {availableStatuses.map(status => ( 
                   <option key={status} value={status}>{status}</option>
               ))}
             </select>
@@ -372,10 +385,11 @@ const AdminOrders = () => {
                 <p className="font-semibold text-gray-700 mb-2">Update Status:</p>
                 <select
                     value={selectedOrder.status}
+                    // 💡 UPDATE 4: Use the updated availableStatuses in the dropdown
                     onChange={(e) => handleStatusUpdate(selectedOrder._id, e.target.value)}
                     className="w-full p-2 border rounded-lg bg-white shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 >
-                    {["Pending", "Processing", "Shipped", "Delivered", "Cancelled"].map(status => (
+                    {availableStatuses.map(status => ( 
                         <option key={status} value={status}>{status}</option>
                     ))}
                 </select>
@@ -429,7 +443,7 @@ const AdminOrders = () => {
 
                 <button
                     onClick={() => setSelectedOrder(null)}
-                    className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition"
+                    className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition mt-2 w-full"
                 >
                     Close
                 </button>

@@ -24,17 +24,18 @@ import ScrollToHashElement from './Lib/ScrollToHashElement.jsx';
 import ProtectedRoute from './Components/ProtectedRoutes/ProtectedRoute.jsx';
 import AdminPanel from './Pages/AdminPanel.jsx';
 import ScrollToTop from './Components/ScrollToTop/ScrollToTop.jsx';
-
+import OfferMarquee from './Components/Marquee/Marquee.jsx';
 
 const stripePromise = loadStripe('pk_test_51RLfz8Kn5UF7A7CjaOfKjFrD27yrWNU9z9PQsQVPnt1XGG5t0Eac16ecyXNkKE47jYZMl8xWP4PEeGVmMcAibmI800zJiXlct7');
 
 function App() {
   const {getTotalCartAmount} = useContext(ShopContext);
   return (
+      
     <div>
       <Elements stripe = {stripePromise} >
       <BrowserRouter>
-
+      
       <Header/>
       <ScrollToTop/>
       <Routes>
@@ -54,13 +55,13 @@ function App() {
         {/* <Route path='/create-payment-intent' element={<CheckoutForm amount={getTotalCartAmount()*100}/>}></Route> */}
         <Route path='/CheckoutPage' element={<CheckoutForm/>}></Route>
         <Route 
-  path='/admin' 
-  element={
-    <ProtectedRoute>
-      <AdminPanel/>
-    </ProtectedRoute>
-  }
-/>
+        path='/admin' 
+          element={
+           <ProtectedRoute>
+                <AdminPanel/>
+              </ProtectedRoute>
+            }
+            />
         
       </Routes>
       <Footer/>

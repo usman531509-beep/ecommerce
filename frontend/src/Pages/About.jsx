@@ -132,7 +132,7 @@ const About = () => {
         </motion.h2>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
-          {[{ img: team1, name: "Zara Sheikh", role: "Creative Director" },
+          {[{ img: team1, name: "Usman Ahmad", role: "Creative Director" },
             { img: team2, name: "Fahad Jameel", role: "Chief Design Officer" },
             { img: team3, name: "Hina Ali", role: "Head of Global Sourcing" }].map((member, i) => (
             <motion.div

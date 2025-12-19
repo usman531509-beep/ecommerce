@@ -5,18 +5,39 @@ import whatsapp from "../Assests/whatsapp-brands-solid.svg";
 import instagram from "../Assests/instagram-brands-solid.svg";
 import snap from "../Assests/snapchat-brands-solid.svg";
 import atelier from "../Assests/atelier2.png";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { Link } from "lucide-react";
+import { ShopContext } from "../../Context/ShopContext";
 
 const Footer = () => {
 
   const [userRole, setUserRole] = useState("guest");
-   
+  const [categories, setCategories] = useState([]);
+  
+  
+  const { API_BASE_URL } = useContext(ShopContext);
+
+  // Fetch categories from backend API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/categories`);
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
    useEffect(() => {
     const userString = localStorage.getItem("user");
     if (userString) {
       try {
         const parsedUser = JSON.parse(userString);
-        setUserRole(parsedUser.role || "user");
+        setUserRole(parsedUser.role || "admin" ? "admin" : "guest");
       } catch (err) {
         console.error("Invalid user JSON in localStorage:", err);
         setUserRole("guest");
@@ -65,44 +86,45 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Quick Links */}
-        <div>
-          <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-4 relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-10 ">
-            Categories
-          </h3>
-          <ul className="space-y-2 text-sm md:text-base">
-            {["Shop", "Headphones", "Airpods", "Watches", "Power Banks"].map(
-              (item, i) => (
-                <li key={i}>
-                  <a
-                    href="#"
-                    className="hover:text-[#ff4141] transition-colors duration-200"
-                  >
-                    {item}
-                  </a>
-                </li>
-              )
-            )}
-          </ul>
-        </div>
-
         {/* Information */}
         <div>
-          <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-4 relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-10 ">
+          <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-4 relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-10">
             Information
           </h3>
           <ul className="space-y-2 text-sm md:text-base">
-            {["About Us", "Contact", "FAQs", "Privacy Policy", "Terms & Conditions"].map(
-              (info, i) => (
-                <li key={i}>
+            {/* Static Links: ABOUT and CONTACT */}
+          {["Home","About", "Contact"].map((item, i) => (
+              <li key={i}>
+                <a
+                  href={item === "Home" ? "/" : `/${item.toLowerCase().replace(/\s+/g, '-')}`}
+                  className="hover:text-[#ff4141] transition-colors duration-200"
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Categories */}
+        <div>
+          <h3 className="text-lg md:text-xl font-semibold text-gray-800 mb-4 relative after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-10">
+            Categories
+          </h3>
+          <ul className="space-y-2 text-sm md:text-base">
+            {categories.length > 0 ? (
+              categories.map((item, i) => (
+                <li key={item._id || i}>
                   <a
-                    href="#"
+                    href={`/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="hover:text-[#ff4141] transition-colors duration-200"
                   >
-                    {info}
+                    {item.name}
                   </a>
                 </li>
-              )
+              ))
+            ) : (
+              <li>No categories available</li>
             )}
           </ul>
         </div>

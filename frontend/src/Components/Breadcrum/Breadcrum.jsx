@@ -19,9 +19,12 @@ const Breadcrum = ({ product }) => {
         Shop
       </Link>
       <img src={arrow_icon} alt=">" className="w-3 sm:w-4 opacity-60" />
-      <span className="capitalize flex items-center gap-1 hover:text-red-500 transition-colors duration-300">
+      <Link
+        to={`/${product?.category.name}`}
+        className="capitalize flex items-center gap-1 hover:text-red-500 transition-colors duration-300"
+      >
         {product?.category.name}
-      </span>
+      </Link>
       <img src={arrow_icon} alt=">" className="w-3 sm:w-4 opacity-60" />
       <span className="truncate max-w-[150px] sm:max-w-none text-gray-800 font-semibold">
         {product?.name}

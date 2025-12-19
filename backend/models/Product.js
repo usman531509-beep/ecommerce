@@ -37,6 +37,12 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
+    currentOffer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Offer",
+      default: null,
+    },
+
     //PRODUCT LEVEL COLORS
     colors: {
       type: [String],

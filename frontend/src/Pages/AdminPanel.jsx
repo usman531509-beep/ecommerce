@@ -10,6 +10,8 @@ import AdminOrders from "../Components/admin/AdminOrders.jsx";
 import AdminReviewManagement from "../Components/admin/ReviewsManagement.jsx";
 import AdminReports from "../Components/admin/Reports.jsx";
 import AdminContactManagement from "../Components/admin/ContactManagement.jsx";
+import OfferManagement from "../Components/admin/OfferManagement.jsx";
+import StockPage from "../Components/admin/Stock.jsx";
 
 const AdminPanel = () => {
   const navigate = useNavigate(); 
@@ -96,6 +98,14 @@ const AdminPanel = () => {
                 🛍️ Product Management
               </button>
               <button
+                onClick={() => handleSectionChange("offers")}
+                className={`text-left px-6 py-3 hover:bg-white/20 ${
+                  activeSection === "offers" && "bg-white/30"
+                }`}
+              >
+                🛍️ Offer Management
+              </button>
+              <button
                 onClick={() => handleSectionChange("categories")}
                 className={`text-left px-6 py-3 hover:bg-white/20 ${
                   activeSection === "categories" && "bg-white/30"
@@ -127,6 +137,14 @@ const AdminPanel = () => {
                 }`}
               >
                 📦 Orders
+              </button>
+              <button
+                onClick={() => handleSectionChange("stock")}
+                className={`text-left px-6 py-3 hover:bg-white/20 ${
+                  activeSection === "stock" && "bg-white/30"
+                }`}
+              >
+                📦 Stock
               </button>
               <button
                 onClick={() => handleSectionChange("users")}
@@ -192,6 +210,8 @@ const AdminPanel = () => {
           {activeSection === "orders" && <AdminOrders />}
           {activeSection === "users" && <UsersTable />}
           {activeSection === "contacts" && <AdminContactManagement />}
+          {activeSection === "offers" && <OfferManagement />}
+          {activeSection === "stock" && <StockPage />}
         </motion.div>
       </main>
     </div>

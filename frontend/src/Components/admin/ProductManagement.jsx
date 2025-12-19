@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { ShopContext } from "../../Context/ShopContext.jsx";
-import { Search, RotateCcw, X } from "lucide-react"; // X icon for removal
+import { Search, RotateCcw, X } from "lucide-react"; 
 
-
+// RichTextEditor component (no change needed)
+// ... (The RichTextEditor component code remains unchanged)
 const BoldIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8V4m0 0a4 4 0 014 4h-4m0 0a4 4 0 00-4 4v0a4 4 0 004 4m0 0a4 4 0 004 4v0a4 4 0 00-4 4m0 0V8"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12h-3"></path></svg>;
 const ItalicIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20h4m-4 0h-4m4-16h4m0 0h-4m-2 16l-2-16m6 16l2-16"></path></svg>;
 const ListIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>;
@@ -12,39 +13,31 @@ const ListIcon = () => <svg className="w-5 h-5" fill="none" stroke="currentColor
 const RichTextEditor = ({ value, onChange, placeholder }) => {
   const editorRef = useRef(null);
   
-  // State to track if the editor is currently focused/active
   const [isTyping, setIsTyping] = useState(false);
 
-  // 1. Initial/External Value Sync:
   useEffect(() => {
     if (editorRef.current && editorRef.current.innerHTML !== value && !isTyping) {
         editorRef.current.innerHTML = value || '';
     }
   }, [value, isTyping]);
 
-
-  // 2. Event Handlers
-  const handleInput = () => {
-      // Input par sirf value update karein, lekin state ko change na karein
-  };
+  const handleInput = () => {};
 
   const handleBlur = () => {
-      // Jab user click out kare, tab final HTML content ko parent state mein save karein
       if (editorRef.current) {
           onChange(editorRef.current.innerHTML);
       }
-      setIsTyping(false); // Typing finished
+      setIsTyping(false); 
   };
   
   const handleFocus = () => {
-      setIsTyping(true); // User started typing
+      setIsTyping(true); 
   };
 
  
   const applyFormat = (command, value = null) => {
       document.execCommand(command, false, value);
       
-      // Formatting ke baad content ko state mein save karna zaroori hai
       if (editorRef.current) {
          onChange(editorRef.current.innerHTML);
       }
@@ -66,7 +59,6 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
               <button
                   type="button"
                   title="Bold"
-                  // onMouseDown: Prevent contentEditable from losing focus before command runs
                   onMouseDown={(e) => handleButtonClick(e, 'bold')} 
                   className="p-1 rounded hover:bg-gray-200 transition"
               >
@@ -105,17 +97,19 @@ const RichTextEditor = ({ value, onChange, placeholder }) => {
       </div>
   );
 };
+// ... (End of RichTextEditor component code)
 
 
 
 const ProductManagement = () => {
   const { API_BASE_URL } = useContext(ShopContext);
   const token = localStorage.getItem("auth-token");
-  // Original data fetched from API
+  
   const [originalProducts, setOriginalProducts] = useState([]); 
-  // Displayed data (which is filtered)
   const [products, setProducts] = useState([]); 
   const [categories, setCategories] = useState([]);
+  // 💡 NEW STATE: To hold all active offers fetched from the backend
+  const [offers, setOffers] = useState([]); 
   
   const [form, setForm] = useState({
     name: "",
@@ -131,6 +125,8 @@ const ProductManagement = () => {
     colors: [],
     sizes: [],
     existingImages: [], 
+    // 💡 NEW FIELD: For storing the selected Offer ID
+    currentOffer: "", 
   });
 
 
@@ -145,14 +141,13 @@ const ProductManagement = () => {
   const [colorInput, setColorInput] = useState("");
   const [sizeInput, setSizeInput] = useState("");
 
-  const [images, setImages] = useState([]); // This holds NEW files
+  const [images, setImages] = useState([]); 
   const [editingProduct, setEditingProduct] = useState(null);
   const [message, setMessage] = useState(null); 
   
-  // Filter State
   const [filters, setFilters] = useState({
     category: "",
-    searchQuery: "", // For product name search
+    searchQuery: "", 
   });
 
  
@@ -164,7 +159,8 @@ const ProductManagement = () => {
  
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/api/products`);
+      // 💡 UPDATE: products fetch karte waqt `currentOffer` ko populate karein
+      const res = await axios.get(`${API_BASE_URL}/api/products?populate=currentOffer`);
       setOriginalProducts(res.data); 
       setProducts(res.data); 
     } catch (error) {
@@ -180,10 +176,25 @@ const ProductManagement = () => {
       console.error("Error fetching categories:", error);
     }
   };
+  
+  // 💡 NEW FUNCTION: Fetch all active offers
+  const fetchOffers = async () => {
+      try {
+          // Assuming your offers API returns all offers, we filter active ones client-side or backend-side
+          const res = await axios.get(`${API_BASE_URL}/api/offers`);
+          // Filter to show only currently Active offers in the dropdown
+          const activeOffers = res.data.filter(o => o.isActive); 
+          setOffers(activeOffers);
+      } catch (error) {
+          console.error("Error fetching offers:", error);
+      }
+  };
+
 
   useEffect(() => {
     fetchProducts();
     fetchCategories();
+    fetchOffers(); // Fetch offers when component mounts
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
@@ -316,17 +327,17 @@ const ProductManagement = () => {
 
       
       Object.entries(form).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
+        if (Array.isArray(value) || typeof value === 'object') {
           // Variations, colors, sizes, existingImages, etc.
           formData.append(key, JSON.stringify(value));
         } else {
-          // Other fields
+          // Other fields (including the new currentOffer ID)
           formData.append(key, value);
         }
       });
       
    
-      images.forEach((file) => formData.append("images", file)); // New files
+      images.forEach((file) => formData.append("images", file)); 
       
       const config = {
         headers: {
@@ -340,16 +351,9 @@ const ProductManagement = () => {
           formData,
           config
         );
-        displayMessage("Product updated successfully!");
+        displayMessage("Product updated successfully! (Offer changes applied)");
       } else {
         await axios.post(`${API_BASE_URL}/api/products`, formData, config);
-       console.log("--- FormData Content ---");
-
-// entries() method تمام key-value pairs کا ایک iterator دیتا ہے۔
-for (const [key, value] of formData.entries()) {
-  console.log(`${key}: ${value}`);
-}
-        
         displayMessage("Product added successfully!");
       }
 
@@ -367,7 +371,8 @@ for (const [key, value] of formData.entries()) {
         variations: [],
         colors: [],
         sizes: [],
-        existingImages: [], // Reset
+        existingImages: [], 
+        currentOffer: "", // Reset new field
       });
 
       setImages([]);
@@ -403,19 +408,40 @@ for (const [key, value] of formData.entries()) {
     setForm({
       ...product,
       description: product.description || "", 
-      // category ID nikalna zaroori hai
       category: product.category?._id || product.category, 
       colors: product.colors || [],
       sizes: product.sizes || [],
       variations: product.variations || [],
-      // Existing images ko separate state mein daalna
       existingImages: product.images || [], 
       isActive: product.isActive !== undefined ? product.isActive : true,
       isNewArrival: product.isNewArrival !== undefined ? product.isNewArrival : false,
       isFeatured: product.isFeatured !== undefined ? product.isFeatured : false,
+      // 💡 NEW FIELD: Set currentOffer ID
+      currentOffer: product.currentOffer?._id || "", // Agar populated hai to ID lo, warna empty
     });
 
-    setImages([]); // New images are reset
+    setImages([]); 
+  };
+  
+  // Helper to display offer details in the table
+  const renderOfferCell = (product) => {
+      const offer = product.currentOffer;
+      
+      if (!offer) {
+          return <span className="text-gray-500">-</span>;
+      }
+      
+      const isExpired = new Date(offer.endDate) < new Date();
+      
+      if (isExpired) {
+          return <span className="text-orange-500 font-medium text-xs">Expired!</span>
+      }
+      
+      return (
+          <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-md">
+              {offer.discountPercentage}% OFF
+          </span>
+      );
   };
 
   return (
@@ -478,7 +504,25 @@ for (const [key, value] of formData.entries()) {
             </option>
           ))}
         </select>
-
+        
+        {/* 💡 NEW FIELD: Offer Selection Dropdown */}
+        <div className="col-span-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Apply Offer</label>
+            <select
+                name="currentOffer"
+                value={form.currentOffer}
+                onChange={handleChange}
+                className="w-full border p-2 rounded focus:ring-red-500 focus:border-red-500 bg-white"
+            >
+                <option value="">No Offer</option>
+                {offers.map((offer) => (
+                    <option key={offer._id} value={offer._id}>
+                        {offer.name} ({offer.discountPercentage}%)
+                    </option>
+                ))}
+            </select>
+        </div>
+        
         <input
           name="stock"
           type="number"
@@ -489,7 +533,7 @@ for (const [key, value] of formData.entries()) {
         />
 
         {/* Checkboxes (Same as before) */}
-        <div className="flex items-center space-x-6 p-2 border bg-gray-50 rounded col-span-1">
+        <div className="flex items-center space-x-6 p-2 border bg-gray-50 rounded col-span-2"> {/* Expanded to col-span-2 for better layout */}
           <label className="flex items-center space-x-2 cursor-pointer">
             <span className="font-medium text-gray-700">Featured:</span>
             <input
@@ -521,7 +565,6 @@ for (const [key, value] of formData.entries()) {
             />
           </label>
         </div>
-
        
         <RichTextEditor
           value={form.description}
@@ -529,7 +572,7 @@ for (const [key, value] of formData.entries()) {
           placeholder="Product details, features, specifications, etc. (Bold and Italic formatting supported)"
         />
 
-        {/* Colors Input (UPDATED) */}
+        {/* Colors Input (Same as before) */}
         <div className="col-span-full">
           <h3 className="font-semibold mb-1">Product Colors</h3>
           <div className="flex gap-2">
@@ -562,7 +605,7 @@ for (const [key, value] of formData.entries()) {
           </div>
         </div>
 
-        {/* Sizes Input (UPDATED) */}
+        {/* Sizes Input (Same as before) */}
         <div className="col-span-full">
           <h3 className="font-semibold mb-1">Product Sizes</h3>
           <div className="flex gap-2">
@@ -595,7 +638,7 @@ for (const [key, value] of formData.entries()) {
           </div>
         </div>
 
-        {/* FILE UPLOAD & IMAGE MANAGEMENT (WITH PREVIEWS) */}
+        {/* FILE UPLOAD & IMAGE MANAGEMENT (Same as before) */}
         <div className="col-span-full">
           <label className="block mb-2 font-semibold text-gray-700">Upload Images:</label>
 
@@ -650,7 +693,7 @@ for (const [key, value] of formData.entries()) {
                                       title={file.name}
                                   >
                                       <img 
-                                          src={URL.createObjectURL(file)} // 🛑 Preview using local object URL
+                                          src={URL.createObjectURL(file)} 
                                           alt={`New ${i + 1}`} 
                                           className="w-full h-full object-cover"
                                       />
@@ -811,6 +854,7 @@ for (const [key, value] of formData.entries()) {
             <tr>
               <th className="py-3 px-4">Sr. No</th>
               <th className="py-3 px-4">Name</th>
+              <th className="py-3 px-4">Offer</th> {/* 💡 NEW COLUMN */}
               <th className="py-3 px-4">Category</th>
               <th className="py-3 px-4">Price</th>
               <th className="py-3 px-4">Stock</th>
@@ -823,7 +867,7 @@ for (const [key, value] of formData.entries()) {
           <tbody>
             {products.length === 0 ? (
                 <tr>
-                    <td colSpan="8" className="p-4 text-center text-gray-500">
+                    <td colSpan="9" className="p-4 text-center text-gray-500">
                         No products found matching the current filters.
                     </td>
                 </tr>
@@ -832,6 +876,7 @@ for (const [key, value] of formData.entries()) {
                   <tr key={p._id} className="border-t hover:bg-red-50/50 transition duration-150">
                     <td className="py-3 px-4">{products.indexOf(p) + 1}</td>
                     <td className="py-3 px-4 font-medium text-gray-800">{p.name}</td>
+                    <td className="py-3 px-4 text-center">{renderOfferCell(p)}</td> {/* 💡 NEW CELL */}
                     <td className="py-3 px-4 text-gray-600">{p.category?.name || "N/A"}</td>
                     <td className="py-3 px-4 font-semibold text-red-600">Rs {p.price}</td>
                     <td className="py-3 px-4 text-gray-800">{p.stock}</td>
@@ -862,6 +907,7 @@ for (const [key, value] of formData.entries()) {
 
         </table>
       </div>
+
     </div>
   );
 };
