@@ -38,7 +38,7 @@ const steps = [
     icon: <FaMoneyBillWave className="text-4xl text-emerald-500" />,
     title: "Step 5: Pay on Delivery",
     description:
-      "Once you receive your parcel, pay the amountneasy and hassle-free!",
+      "Once you receive your parcel, pay the amount easy and hassle-free!",
   },
 ];
 

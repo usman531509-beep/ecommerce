@@ -1,84 +1,19 @@
 
-// import react, {createContext, useEffect, useState} from 'react';
-// //import all_product from '../Components/Assests/all_product'
-// import axios from 'axios';
-// export const ShopContext = createContext(null);
-
-// const getDefaultCart = ()=>{
-//     let cart = {};
-//     for (let index = 0; index < 100; index++) {
-//         cart[index] = 0;
-//     }
-//     return cart;
-// }
-
-
-// const ShopContextProvider = (props)=>{
-//     const [cartItems, setCartItems] = useState(getDefaultCart());
-//     const [all_product, setall_product] = useState([]);
-
-//     useEffect(()=>{
-//         axios.get('http://localhost:4000/allproducts').then((res)=>{
-//             setall_product(res.data);
-            
-//         })
-//     },[])
-    
-//     const addToCart = (itemId)=>{
-//         setCartItems((prev)=>({...prev,[itemId]:prev[itemId]+1}))
-//        console.log(cartItems)
-//     }
-//     const removeFromCart = (itemId)=>{
-//         setCartItems((prev)=>({...prev,[itemId]:prev[itemId]-1}))
-//     }
-
-    
-//     const getTotalCartAmount = ()=>{
-//         let totalAmont = 0;
-//         for(const item in cartItems)
-//         {
-//             if (cartItems[item]>0)
-//             {
-//                 let itemInfo = all_product.find((product)=>product.id === Number(item));
-//                 totalAmont += itemInfo.new_price * cartItems[item];
-//             }
-            
-//         }
-//         return totalAmont;
-//     }
-
-//     const getTotalCartItem=()=>{
-//         let totalItem = 0
-//         for(const item in cartItems)
-//         {
-//             if(cartItems[item]>0)
-//             {
-//                 totalItem += cartItems[item];
-//             }
-//         }
-//         return totalItem;
-//     }
-
-//     const ContextValue = {all_product,cartItems,addToCart,removeFromCart,getTotalCartAmount,getTotalCartItem};
-//     return(
-//         <ShopContext.Provider value= {ContextValue}>
-//             {props.children} 
-//         </ShopContext.Provider>
-//     )
-// }
-
-// export default ShopContextProvider;
 import React, { createContext, useEffect, useState } from "react";
 import axios from "axios";
 
 export const ShopContext = createContext(null);
 
 const ShopContextProvider = (props) => {
-  const [cartItems, setCartItems] = useState([]); // changed from object → array
+  const [cartItems, setCartItems] = useState([]); 
   console.log("Cart Items:", cartItems);
   const [all_product, setAllProduct] = useState([]);
   const [user, setUser] = useState(localStorage.getItem("auth-token") || null);
   const [loadingUser, setLoadingUser] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [offers, setOffers] = useState([]);
+  console.log("Offers in Context:", offers);
+  
   const API_BASE_URL = "https://ecommerce-w9sv.onrender.com";
   // const API_BASE_URL = "http://localhost:4000";
   //Fetch all products
@@ -93,6 +28,34 @@ const ShopContextProvider = (props) => {
       }
     };
     fetchProducts();
+  }, []);
+
+  //Fetch all categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/categories`);
+        if (res.data) setCategories(res.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error.message);
+        setCategories([]);
+      }
+    };
+    fetchCategories();
+  }, []);
+  
+  // fetch offers
+  useEffect(() => {
+    const fetchOffers = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/api/offers`);
+        if (res.data) setOffers(res.data);
+      } catch (error) {
+        console.error("Error fetching offers:", error.message);
+        setOffers([]);
+      }
+    };
+    fetchOffers();
   }, []);
 
   // Fetch user profile (if token exists)
@@ -210,7 +173,9 @@ const getTotalCartAmount = () => {
 
   const ContextValue = {
     all_product,
+    categories,
     cartItems,
+    offers,
     user,
     setUser,
     loadingUser,

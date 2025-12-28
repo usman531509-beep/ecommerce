@@ -112,7 +112,7 @@ export const addProduct = async (req, res) => {
         isFeatured: isFeatured || false,
         isActive: isActive ?? true,
         isNewArrival: isNewArrival || false,
-        discountPrice: null, // Initialize
+        discountPrice: null, 
     };
     
     

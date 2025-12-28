@@ -2,7 +2,7 @@ import React, { useContext, useState, useMemo } from "react";
 import { useParams } from 'react-router-dom';
 import { ShopContext } from "../Context/ShopContext";
 import Item from "../Components/Items/Item";
-import { SlidersHorizontal, ArrowDownWideNarrow, X } from "lucide-react"; 
+import { SlidersHorizontal, ArrowDownWideNarrow,} from "lucide-react"; 
 import { motion } from "framer-motion";
 
 const ShopCategory = (props) => {
@@ -12,11 +12,8 @@ const ShopCategory = (props) => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
   const [inStockOnly, setInStockOnly] = useState(false);
-
   const { categoryName } = useParams();
   const currentCategory = categoryName || 'shop'; 
-
-  const ACCENT_COLOR = "text-[#ff4141]";
   const ACCENT_BG = "bg-[#ff4141]";
   const LIGHT_BG = "bg-gray-50"; 
   
@@ -32,7 +29,7 @@ const ShopCategory = (props) => {
     setVisibleProducts(8);
   };
 
-  // 💡 Updated Helper: Calculate discounted price based on offer percentage
+
   const getCalculatedPrice = (item) => {
     const originalPrice = item.price;
     const discount = item.currentOffer?.isActive ? item.currentOffer.discountPercentage : 0;
@@ -91,7 +88,7 @@ const ShopCategory = (props) => {
   const loadMoreItems = () => setVisibleProducts((prev) => prev + 6);
 
   return (
-    <div className="w-full flex flex-col bg-gradient-to-b from-[#fde1ff] to-[#e1ffea22] items-center px-4 md:px-10 pt-32 pb-16 bg-white min-h-screen"> 
+    <div className="w-full flex flex-col bg-gradient-to-b from-[#fde1ff] to-[#e1ffea22] items-center px-4 md:px-10 pt-20 pb-16 bg-white min-h-screen"> 
       
       {/* Header Section */}
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-6xl mb-10 text-center">
@@ -145,7 +142,7 @@ const ShopCategory = (props) => {
             // 💡 Dynamic Calculation for UI
             const hasActiveOffer = item.currentOffer?.isActive && item.currentOffer?.discountPercentage > 0;
             const newPrice = getCalculatedPrice(item);
-            const oldPrice = item.price; // Original Price is now the Old Price
+            const oldPrice = item.price; 
             
             return (
                 <motion.div key={item._id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}>

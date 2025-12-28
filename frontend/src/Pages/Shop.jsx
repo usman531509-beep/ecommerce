@@ -8,14 +8,15 @@ import OrderProcess from '../Components/orderProcess/orderProcess'
 import Testimonials from '../Components/Reviews/Testimonials'
 import StatsSection from '../Components/StatsSection/StatsSection'
 import OfferMarquee from '../Components/Marquee/Marquee'
-
+import CategoryShowcase from '../Components/CategoryShowcase/CategoryShowCase'
 
 const Shop = () => {
   return (
     <div>
       
       <Main/>
-      <OfferMarquee />
+      {/* <OfferMarquee /> */}
+      <CategoryShowcase/> 
       <Popular/>
       <StatsSection/>
       <Offers/>

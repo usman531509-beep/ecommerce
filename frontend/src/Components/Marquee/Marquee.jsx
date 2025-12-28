@@ -6,36 +6,22 @@ import './Marquee.css';
 
 
 const OfferMarquee = () => {
-    const { API_BASE_URL } = useContext(ShopContext); 
-    const [offers, setOffers] = useState([]);
-    
-    useEffect(() => {
-        const fetchMarqueeOffers = async () => {
-            try {
-        
-                const response = await axios.get(`${API_BASE_URL}/api/offers`); 
-                setOffers(response.data);
-            } catch (error) {
-                console.error("Failed to fetch marquee offers:", error);
-                setOffers([]);
-            }
-        };
-        fetchMarqueeOffers();
-    }, [API_BASE_URL]);
-
+    const { offers } = useContext(ShopContext); 
+   
 
     if (!offers || offers.length === 0) {
         return null;
     }
     
-
-   
     const createMarqueeContent = (offersArray, repeatIndex) => {
         
         return offersArray.map((offer, index) => (
-            <React.Fragment key={`${offer._id}-${repeatIndex}-${index}`}>
-                <span 
-                    
+            <div 
+        className="w-full sticky top-0 left-0 bg-gradient-to-r from-red-600 to-pink-600 text-white py-2 overflow-hidden z-[60] h-[44px]"
+    >
+           <React.Fragment key={`${offer._id}-${repeatIndex}-${index}`}>
+                <span
+
                     className="flex items-center gap-4 whitespace-nowrap text-lg font-medium tracking-wide"
                 >
                     <Tag className="w-5 h-5 text-yellow-300 animate-pulse" />
@@ -54,6 +40,8 @@ const OfferMarquee = () => {
                
                 <span className="px-8" />
             </React.Fragment>
+    </div>
+         
         ));
     };
 

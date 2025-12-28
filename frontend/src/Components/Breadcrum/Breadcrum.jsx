@@ -4,7 +4,7 @@ import arrow_icon from "../Assests/breadcrum_arrow.png";
 
 const Breadcrum = ({ product }) => {
   return (
-    <div style={{marginTop: '90px'}} className="w-full bg-gradient-to-r from-pink-50 via-white to-pink-50 py-3 px-4 sm:px-8 flex flex-wrap items-center justify-center sm:justify-start gap-2 text-sm sm:text-base font-medium text-gray-600 shadow-sm">
+    <div  className="w-full bg-gradient-to-r from-pink-50 via-white to-pink-50 py-3 px-4 sm:px-8 flex flex-wrap items-center justify-center sm:justify-start gap-2 text-sm sm:text-base font-medium text-gray-600 shadow-sm">
       <Link
         to="/"
         className="hover:text-red-500 transition-colors duration-300 flex items-center gap-1"

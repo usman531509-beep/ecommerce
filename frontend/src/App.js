@@ -2,16 +2,13 @@
 import './App.css';
 import Header from './Components/Navbar/Navbar';
 import { BrowserRouter,Routes,Route } from 'react-router-dom';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import Shop from './Pages/Shop';
 import ShopCatagory from './Pages/ShopCatagory';
 import Product from './Pages/Product';
 import Cart from './Pages/Cart';
 import LoginPage from './Pages/LoginPage';
 import Footer from './Components/Footer/Footer';
-import headphone_banner from './Components/Assests/banner_headphone.png';
-import watch_banner from './Components/Assests/banner_watch.png';
-import airpod_banner from './Components/Assests/banner_airpod.png';
 import CheckoutForm from './Pages/CheckoutForm';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -35,7 +32,7 @@ function App() {
     <div>
       <Elements stripe = {stripePromise} >
       <BrowserRouter>
-      
+      <OfferMarquee />
       <Header/>
       <ScrollToTop/>
       <Routes>

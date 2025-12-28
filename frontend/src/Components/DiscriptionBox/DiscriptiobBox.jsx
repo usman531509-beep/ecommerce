@@ -53,13 +53,12 @@ const DescriptionBox = ({ product }) => {
         <div className="mt-8 text-gray-700 leading-relaxed">
 
           {activeTab === "description" ? (
-            /* ------------------ DESCRIPTION TAB ------------------ */
             <div className="bg-gray-50 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300">
               <h2 className="text-xl font-semibold mb-2 text-gray-900">
                 {product?.name}
               </h2>
 
-              <p className="text-sm sm:text-base">
+              <p className="text-sm sm:text-base text-gray-700 overflow-hidden whitespace-pre-line break-words">
                 {product?.description ||
                   "Discover exceptional quality and modern design with this product. Crafted to deliver comfort, durability, and unmatched performance."}
               </p>

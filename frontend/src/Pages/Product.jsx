@@ -14,14 +14,14 @@ const Product = () => {
 
   if (!product) {
     return (
-      <div className="text-center mt-20 text-2xl font-semibold text-gray-600">
+      <div className="p-8 text-center text-xl text-red-600 min-h-screen bg-gray-50">
         Product not found 🧐
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="pt-16 bg-white min-h-screen">
       <Breadcrum product={product} />
       <ProductDisplay product={product} />
       <DiscriptiobBox product={product} />

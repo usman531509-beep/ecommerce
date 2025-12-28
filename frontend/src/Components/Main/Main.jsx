@@ -15,9 +15,9 @@ const Main = () => {
  
   return (
     <>
-      
-      <section className="relative flex flex-col md:flex-row items-center justify-center min-h-[85vh] bg-gradient-to-b from-[#fde1ff] to-[#e1ffea22] overflow-hidden font-[Lucida_Sans] px-6 md:px-16 lg:px-24 gap-6 md:gap-10">
-          
+
+      <section className="relative flex flex-col md:flex-row items-center justify-center min-h-[85vh] bg-gradient-to-b from-[#fde1ff] to-[#e1ffea22] overflow-hidden font-[Lucida_Sans] px-6 md:px-16 lg:px-24 gap-6 md:gap-10 pt-[ 0px] md:pt-[100px]">
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: [0.4, 0.7, 0.4] }}

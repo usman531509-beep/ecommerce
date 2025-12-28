@@ -150,30 +150,40 @@ const AdminOrders = () => {
         return;
     }
     
-    // Confirmation for sensitive status changes
-    if (newStatus === 'Cancelled' || newStatus === 'Returned') {
-         if (!window.confirm(`Are you sure you want to mark this order as ${newStatus}?`)) {
-             return;
-         }
+    // Safety Confirmations for important transitions
+    const confirmMsg = newStatus === 'Processing' 
+      ? "Mark as Processing? This will deduct items from current stock."
+      : newStatus === 'Returned' 
+      ? "Mark as Returned? This will add items back to your stock."
+      : `Are you sure you want to mark this order as ${newStatus}?`;
+
+    if (['Processing', 'Returned', 'Cancelled'].includes(newStatus)) {
+         if (!window.confirm(confirmMsg)) return;
     }
     
     try {
-        await axios.put(`${API_URL}/${orderId}`, 
+        // API call to update status
+        const response = await axios.put(`${API_URL}/${orderId}`, 
             { status: newStatus },
             { headers: { Authorization: `Bearer ${token}` } }
         );
        
-        // Status update ke baad data ko dobara fetch karein
+        // Update local list
         fetchOrders(); 
+
+        // Update selected order view in modal
         if (selectedOrder && selectedOrder._id === orderId) {
-            setSelectedOrder(prev => ({ ...prev, status: newStatus }));
+            // Backend se updated order mil raha ho toh wo set karein, warna local state update
+            setSelectedOrder(response.data.order || { ...selectedOrder, status: newStatus });
         }
         
-        alert(`Order ${orderId.slice(-6)} status updated to ${newStatus}.`);
+        alert(response.data.message || `Order status updated to ${newStatus}.`);
     } catch (error) {
         console.error("Error updating status:", error);
-      
-        alert("Failed to update order status.");
+        
+        // 💡 Stock error handling: Backend se ane wala specific message dikhayein
+        const errorMessage = error.response?.data?.message || "Failed to update order status.";
+        alert(`⚠️ ERROR: ${errorMessage}`);
     }
   };
 

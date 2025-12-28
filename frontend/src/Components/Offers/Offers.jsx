@@ -1,5 +1,5 @@
 import React from "react";
-import exclusive_image from "../Assests/exclusive_image.png";
+import exclusive_image from "../Assests/exclusive.png";
 
 const Offers = () => {
   const handleScrollToNewCollection = () => {
@@ -32,7 +32,7 @@ const Offers = () => {
         <img
           src={exclusive_image}
           alt="Exclusive Offer"
-          className="w-64 sm:w-80 md:w-96 lg:w-[420px] drop-shadow-md hover:scale-105 transition-transform duration-500"
+          className="w-70 sm:w-80 md:w-96 lg:w-[490px] drop-shadow-md hover:scale-105 transition-transform duration-500"
         />
       </div>
     </section>
