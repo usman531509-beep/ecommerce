@@ -1,6 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext} from "react";
 import { X, Send, Sparkles, BotIcon, RotateCcw } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { ShopContext } from "../../Context/ShopContext.jsx";
+
+const {API_BASE_URL} = useContext(ShopContext);
+
 
 const ProductBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +29,7 @@ const ProductBot = () => {
     setIsTyping(true);
 
     try {
-      const response = await fetch("http://localhost:4000/api/chat", {
+      const response = await fetch(`${API_BASE_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input })
