@@ -3,10 +3,11 @@ import { X, Send, Sparkles, BotIcon, RotateCcw } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { ShopContext } from "../../Context/ShopContext.jsx";
 
-const {API_BASE_URL} = useContext(ShopContext);
+
 
 
 const ProductBot = () => {
+    const {API_BASE_URL} = useContext(ShopContext);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     { role: "bot", text: "Hello! ✨ I'm your **Atelier** assistant. Looking for a Ring, Earings, or Bracelets? Ask me anything!" }
