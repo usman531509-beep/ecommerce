@@ -22,6 +22,8 @@ import ProtectedRoute from './Components/ProtectedRoutes/ProtectedRoute.jsx';
 import AdminPanel from './Pages/AdminPanel.jsx';
 import ScrollToTop from './Components/ScrollToTop/ScrollToTop.jsx';
 import OfferMarquee from './Components/Marquee/Marquee.jsx';
+import WhatsAppWidget from './Components/Whatsapp/Whatsapp.jsx';
+import ProductBot from './Components/Chatbot/Chatbot.jsx';
 
 const stripePromise = loadStripe('pk_test_51RLfz8Kn5UF7A7CjaOfKjFrD27yrWNU9z9PQsQVPnt1XGG5t0Eac16ecyXNkKE47jYZMl8xWP4PEeGVmMcAibmI800zJiXlct7');
 
@@ -61,6 +63,8 @@ function App() {
             />
         
       </Routes>
+      <ProductBot />
+      <WhatsAppWidget />
       <Footer/>
       </BrowserRouter>
       </Elements>

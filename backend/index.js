@@ -13,6 +13,7 @@ import orderRoutes from "./Routes/orderRoutes.js";
 import reviewRoutes from "./Routes/ReviewRoutes.js"; 
 import contactRoutes from "./Routes/contactRoutes.js"; 
 import offerRoutes from "./Routes/offerRoutes.js";
+import chatRoutes from "./Routes/chatRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -34,6 +35,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes); 
 app.use("/api/contact", contactRoutes);
 app.use("/api/offers", offerRoutes);
+app.use("/api/chat", chatRoutes)
 
 //Error Handlers
 app.use(notFound);

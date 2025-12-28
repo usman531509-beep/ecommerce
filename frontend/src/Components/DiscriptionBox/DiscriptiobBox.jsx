@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useContext } from "react";
 import { ShopContext } from "../../Context/ShopContext";
+import parse from "html-react-parser";
 
 const DescriptionBox = ({ product }) => {
   const [activeTab, setActiveTab] = useState("description");
@@ -59,8 +60,8 @@ const DescriptionBox = ({ product }) => {
               </h2>
 
               <p className="text-sm sm:text-base text-gray-700 overflow-hidden whitespace-pre-line break-words">
-                {product?.description ||
-                  "Discover exceptional quality and modern design with this product. Crafted to deliver comfort, durability, and unmatched performance."}
+                {parse(product?.description ||
+                  "Discover exceptional quality and modern design with this product. Crafted to deliver comfort, durability, and unmatched performance.")}
               </p>
             </div>
           ) : (
