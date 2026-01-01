@@ -14,8 +14,8 @@ const ShopContextProvider = (props) => {
   const [offers, setOffers] = useState([]);
   console.log("Offers in Context:", offers);
   
-  // const API_BASE_URL = "https://ecommerce-w9sv.onrender.com";
-  const API_BASE_URL = "http://localhost:4000";
+  const API_BASE_URL = "https://ecommerce-w9sv.onrender.com";
+  // const API_BASE_URL = "http://localhost:4000";
   //Fetch all products
   useEffect(() => {
     const fetchProducts = async () => {
