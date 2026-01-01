@@ -82,7 +82,7 @@ const ProductBot = () => {
                 </div>
               </div>
             ))}
-            {isTyping && <div className="flex gap-1 p-3 bg-white w-12 rounded-full shadow-sm"><span className="w-1.5 h-1.5 bg-gray-300 rounded-full animate-bounce"></span></div>}
+            {isTyping && <div className="flex gap-1 p-3 bg-white w-12 rounded-full shadow-sm animate-pulse"><span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"></span><span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"></span><span className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"></span></div>}
           </div>
 
           {/* Input */}

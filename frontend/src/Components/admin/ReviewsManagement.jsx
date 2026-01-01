@@ -15,7 +15,7 @@ const AdminReviewManagement = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      
       setReviews(res.data);
       setLoading(false);
     } catch (error) {
@@ -25,14 +25,14 @@ const AdminReviewManagement = () => {
 
   const deleteReview = async (id) => {
     if (!window.confirm("Are you sure you want to delete this review?")) return;
-
+    console.log("Review deleted:", id);
     try {
       await axios.delete(`${API_BASE_URL}/api/reviews/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
+      
       setReviews(reviews.filter((r) => r._id !== id));
     } catch (error) {
       console.log("Delete error:", error);

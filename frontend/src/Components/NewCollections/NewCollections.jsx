@@ -27,7 +27,7 @@ const NewCollections = () => {
               name={item.name}
               image={item.images?.[0]?.url || item.image} 
               new_price={item.price} 
-              old_price={item.old_price}
+             
               discountPercentage={item.currentOffer?.isActive ? item.currentOffer.discountPercentage : ''}
             />
           ))

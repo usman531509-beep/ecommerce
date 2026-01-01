@@ -461,75 +461,104 @@ const ProductManagement = () => {
         onSubmit={handleSubmit}
         className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 sm:p-6 rounded-lg shadow-md mb-10"
       >
-        {/* Top Inputs (Same as before) */}
-        <input
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          placeholder="Product Name"
-          className="border p-2 rounded focus:ring-blue-500 focus:border-blue-500"
-          required
-        />
-        <input
-          name="price"
-          type="number"
-          value={form.price}
-          onChange={handleChange}
-          placeholder="Price"
-          className="border p-2 rounded focus:ring-blue-500 focus:border-blue-500"
-          required
-        />
 
-        <input
-          name="old_price"
-          type="number"
-          value={form.old_price}
-          onChange={handleChange}
-          placeholder="Old Price (Optional)"
-          className="border p-2 rounded focus:ring-blue-500 focus:border-blue-500"
-        />
+            {/* Product Name */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Product Name</label>
+              <input
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="e.g. Royal Gold Ring"
+                className="w-full border border-gray-300 p-2.5 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none transition-all placeholder:text-gray-400"
+                required
+              />
+            </div>
 
-        <select
-          name="category"
-          value={form.category}
-          onChange={handleChange}
-          className="border p-2 rounded focus:ring-blue-500 focus:border-blue-500 bg-white"
-          required
-        >
-          <option value="">Select Category</option>
-          {categories.map((cat) => (
-            <option key={cat._id} value={cat._id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-        
-        {/* 💡 NEW FIELD: Offer Selection Dropdown */}
-        <div className="col-span-1">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Apply Offer</label>
-            <select
+            {/* Category Selection */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Category</label>
+              <select
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                className="w-full border border-gray-300 p-2.5 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none bg-white transition-all cursor-pointer"
+                required
+              >
+                <option value="">Select Category</option>
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Price */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Current Price (Rs)</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">Rs.</span>
+                <input
+                  name="price"
+                  type="number"
+                  value={form.price}
+                  onChange={handleChange}
+                  placeholder="0.00"
+                  className="w-full border border-gray-300 p-2.5 pl-10 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none transition-all"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Old Price */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold text-gray-500 ml-1">Old Price</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">Rs.</span>
+                <input
+                  name="old_price"
+                  type="number"
+                  value={form.old_price}
+                  onChange={handleChange}
+                  placeholder="Optional"
+                  className="w-full border border-gray-200 p-2.5 pl-10 rounded-xl focus:ring-2 focus:ring-red-500/10 focus:border-gray-400 outline-none transition-all bg-gray-50/50"
+                />
+              </div>
+            </div>
+
+            {/* Offer Selection */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold text-gray-700 ml-1 flex items-center gap-1">
+                Active Offer
+              </label>
+              <select
                 name="currentOffer"
                 value={form.currentOffer}
                 onChange={handleChange}
-                className="w-full border p-2 rounded focus:ring-red-500 focus:border-red-500 bg-white"
-            >
-                <option value="">No Offer</option>
+                className="w-full border-2 p-2.5 rounded-xl focus:ring-2 outline-none cursor-pointer font-medium text-gray-700"
+              >
+                <option value="">No Active Offer</option>
                 {offers.map((offer) => (
-                    <option key={offer._id} value={offer._id}>
-                        {offer.name} ({offer.discountPercentage}%)
-                    </option>
+                  <option key={offer._id} value={offer._id}>
+                    {offer.name} — {offer.discountPercentage}% OFF
+                  </option>
                 ))}
-            </select>
-        </div>
-        
-        <input
-          name="stock"
-          type="number"
-          value={form.stock}
-          onChange={handleChange}
-          placeholder="Stock"
-          className="border p-2 rounded focus:ring-blue-500 focus:border-blue-500"
-        />
+              </select>
+            </div>
+
+            {/* Stock */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Stock Quantity</label>
+              <input
+                name="stock"
+                type="number"
+                value={form.stock}
+                onChange={handleChange}
+                placeholder="e.g. 50"
+                className="w-full border border-gray-300 p-2.5 rounded-xl focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none transition-all"
+              />
+            </div>
+
+
 
         {/* Checkboxes (Same as before) */}
         <div className="flex items-center space-x-6 p-2 border bg-gray-50 rounded col-span-2"> {/* Expanded to col-span-2 for better layout */}

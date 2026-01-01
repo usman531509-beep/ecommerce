@@ -21,8 +21,8 @@ const AdminReports = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("auth-token");
-  const { API_BASE_URL } = useContext(ShopContext);
-  
+  const { API_BASE_URL, all_product } = useContext(ShopContext);
+
 
   const fetchOrders = async () => {
     try {
@@ -145,31 +145,38 @@ const AdminReports = () => {
     { 
       title: "Total Orders Placed",
       value: totalOrdersCount.toLocaleString(),
-      description: "Saare orders ki total count.",
+      description: "All orders count.",
       color: "border-blue-500",
       textColor: "text-blue-600"
     },
     { 
       title: "Total Value of Orders Received",
       value: currencyFormatter(totalOrderValue),
-      description: "All orders ka raw value.",
+      description: "All orders raw value.",
       color: "border-purple-500",
       textColor: "text-purple-600"
     },
     { 
       title: "Net Revenue (Delivered/Shipped)",
       value: currencyFormatter(totalRevenue),
-      description: "Delivered/Shipped orders ka final revenue.", // Updated description
+      description: "Delivered/Shipped orders final revenue.", // Updated description
       color: "border-red-500",
       textColor: "text-red-600"
     },
     { 
       title: "Total Items Sold",
       value: totalItemsSold.toLocaleString(),
-      description: "Products sold in final transactions.", // Updated description
+      description: "Products sold", // Updated description
       color: "border-green-500",
       textColor: "text-green-600"
     },
+    {
+      title: "Total Products",
+      value: all_product.length.toLocaleString(),
+      description: "Total products available in the store.",
+      color: "border-yellow-500",
+      textColor: "text-yellow-600"
+    }
   ];
 
 
@@ -179,8 +186,8 @@ const AdminReports = () => {
         📈 Admin Sales Reporting Dashboard
       </h2>
 
-     
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* 1. Key Metrics Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
         {metrics.map((metric, index) => (
             <div 
               key={index} 

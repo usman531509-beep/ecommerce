@@ -71,26 +71,29 @@ export const getAllReviews = async (req, res) => {
 // Delete a review
 export const deleteReview = async (req, res) => {
   try {
-    const { reviewId } = req.params;
-    const userId = req.user.id;
+   
+    if (!req.user || req.user.role !== 'admin') {
+      return res.status(403).json({ 
+        message: "Access denied. Only admins can delete reviews.",
+        debugInfo: { 
+          receivedId: req.user?._id, 
+          currentRole: req.user?.role // Isse confirm ho jayega
+        }
+      });
+    }
 
-    // Find the review
+    const reviewId = req.params.id;
     const review = await Review.findById(reviewId);
+
     if (!review) {
       return res.status(404).json({ message: "Review not found" });
     }
 
-    // Check if the user is the owner of the review or an admin
-    if (review.user.toString() !== userId && !req.user.isAdmin) {
-      return res.status(403).json({ message: "Unauthorized to delete this review" });
-    }
-
-    // Delete the review
     await Review.findByIdAndDelete(reviewId);
-
     res.status(200).json({ message: "Review deleted successfully" });
+
   } catch (error) {
-    console.error("Delete Review Error:", error);
+    console.error("Delete Error:", error);
     res.status(500).json({ message: error.message });
   }
-};      
+};
