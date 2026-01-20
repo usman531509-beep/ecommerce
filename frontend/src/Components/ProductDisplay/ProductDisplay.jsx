@@ -114,7 +114,7 @@ const ProductDisplay = ({ product }) => {
   return (
     <div className="relative w-full px-5 sm:px-10 py-10 bg-white animate-fadeIn">
       {showPopup && (
-        <div className="fixed top-5 right-5 bg-green-600 text-white px-5 py-3 rounded-lg shadow-xl z-50 animate-slideInRight">
+        <div className="fixed top-12 right-5 bg-green-600 text-white px-5 py-3 rounded-lg shadow-xl z-50 animate-slideInRight">
           <p className="font-semibold">Successfully added to cart!</p>
           <Link to="/cart" className="underline mt-1 text-sm block">View Shopping Cart</Link>
         </div>

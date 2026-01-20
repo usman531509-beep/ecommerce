@@ -4,3 +4,15 @@ html {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer utilities {
+  .animate-slow-rotate {
+    /* Mobile par thoda tez kar sakte hain ya wahi rakhein */
+    animation: rotate-3d 40s linear infinite;
+    will-change: transform; /* Browser ko optimized rakhta hai */
+  }
+
+  @keyframes rotate-3d {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+  }
+}
