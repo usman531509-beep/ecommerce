@@ -9,6 +9,7 @@ import Testimonials from '../Components/Reviews/Testimonials'
 import StatsSection from '../Components/StatsSection/StatsSection'
 import OfferMarquee from '../Components/Marquee/Marquee'
 import CategoryShowcase from '../Components/CategoryShowcase/CategoryShowCase'
+import RotatingCards from '../Components/Carousel/HomeCarousel'
 
 const Shop = () => {
   return (
@@ -17,6 +18,7 @@ const Shop = () => {
       <Main/>
       {/* <OfferMarquee /> */}
       <CategoryShowcase/> 
+      <RotatingCards/>
       <Popular/>
       <StatsSection/>
       <Offers/>
