@@ -168,7 +168,7 @@ const Footer = () => {
       {/* Divider + Bottom Text */}
       <div className="mt-12 border-t border-gray-300 pt-4 text-center text-sm text-gray-500">
         © 2025{" "}
-        <span className="font-semibold text-[#ff4141]">Atelier.com</span> — All rights reserved.
+        <span className="font-semibold text-[#ff4141]">Atelier.com </span> All rights reserved.
       </div>
     </footer>
   );

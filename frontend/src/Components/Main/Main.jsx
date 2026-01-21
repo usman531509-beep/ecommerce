@@ -12,7 +12,7 @@ const Main = () => {
       section.scrollIntoView({ behavior: "smooth" });
     }
   };
- 
+
   return (
     <>
 
@@ -31,7 +31,7 @@ const Main = () => {
           className="absolute bottom-10 right-10 w-28 h-28 bg-green-200 rounded-full blur-2xl"
         />
 
-      
+
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           whileInView={{ opacity: 1, x: 0 }}
@@ -92,28 +92,28 @@ const Main = () => {
             </motion.p>
           </div>
 
-          
-          
+
+
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
             className="flex justify-center md:justify-start mt-6"
           >
-            
-              <motion.button
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleScrollToNewCollection}
-                className="w-[200px] sm:w-[230px] h-[60px] sm:h-[65px] rounded-full bg-[#ff4141] text-white text-[18px] sm:text-[20px] font-semibold cursor-pointer shadow-md hover:shadow-lg hover:bg-[#e63b3b] transition-all duration-300"
-              >
-                Latest Collection
-              </motion.button>
-            
+
+            <motion.button
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleScrollToNewCollection}
+              className="w-[200px] sm:w-[230px] h-[60px] sm:h-[65px] rounded-full bg-[#ff4141] text-white text-[18px] sm:text-[20px] font-semibold cursor-pointer shadow-md hover:shadow-lg hover:bg-[#e63b3b] transition-all duration-300"
+            >
+              Latest Collection
+            </motion.button>
+
           </motion.div>
         </motion.div>
 
-      
+
         <motion.div
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}

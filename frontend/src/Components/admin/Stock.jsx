@@ -152,10 +152,10 @@ const StockPage = () => {
 
                       <td className="py-5 px-8 text-right">
                         <div className="flex flex-col items-end">
-                           <span className="text-red-600 font-black text-base">
-                             <span className="text-xs mr-1 font-normal text-gray-400 italic">Rs.</span>
-                             {(product.price || 0).toLocaleString()}
-                           </span>
+                          <span className="text-red-600 font-black text-base">
+                            <span className="text-xs mr-1 font-normal text-gray-400 italic">Rs.</span>
+                            {(product.price || 0).toLocaleString()}
+                          </span>
                         </div>
                       </td>
                     </tr>

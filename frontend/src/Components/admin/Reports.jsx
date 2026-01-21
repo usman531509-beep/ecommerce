@@ -4,15 +4,15 @@ import { ShopContext } from "../../Context/ShopContext.jsx";
 
 // Helper function for status colors (matching AdminOrders for consistency)
 const getStatusClasses = (status) => {
-    switch (status) {
-        case "Delivered": return "text-green-800 bg-green-100 border-green-300";
-        case "Cancelled": return "text-red-800 bg-red-100 border-red-300";
-        case "Processing": return "text-yellow-800 bg-yellow-100 border-yellow-300";
-        case "Shipped": return "text-blue-800 bg-blue-100 border-blue-300";
-        case "Returned": return "text-purple-800 bg-purple-100 border-purple-300"; // Added Returned
-        case "Pending": return "text-gray-800 bg-gray-100 border-gray-300";
-        default: return "text-gray-800 bg-gray-100 border-gray-300";
-    }
+  switch (status) {
+    case "Delivered": return "text-green-800 bg-green-100 border-green-300";
+    case "Cancelled": return "text-red-800 bg-red-100 border-red-300";
+    case "Processing": return "text-yellow-800 bg-yellow-100 border-yellow-300";
+    case "Shipped": return "text-blue-800 bg-blue-100 border-blue-300";
+    case "Returned": return "text-purple-800 bg-purple-100 border-purple-300"; // Added Returned
+    case "Pending": return "text-gray-800 bg-gray-100 border-gray-300";
+    default: return "text-gray-800 bg-gray-100 border-gray-300";
+  }
 };
 
 
@@ -46,25 +46,25 @@ const AdminReports = () => {
 
 
   const reportData = useMemo(() => {
- 
+
     const totalOrderValue = orders.reduce((acc, order) => acc + order.totalPrice, 0);
 
-    
+
     // 💡 FIX 1: Filter out 'Cancelled' AND 'Returned' orders for Revenue calculation
-    const revenueGeneratingOrders = orders.filter(order => 
-        (order.status === 'Delivered' || order.status === 'Shipped')
-        // Ensure no cancelled or returned orders are counted in revenue
-        && order.status !== 'Cancelled' 
-        && order.status !== 'Returned' 
+    const revenueGeneratingOrders = orders.filter(order =>
+      (order.status === 'Delivered' || order.status === 'Shipped')
+      // Ensure no cancelled or returned orders are counted in revenue
+      && order.status !== 'Cancelled'
+      && order.status !== 'Returned'
     );
 
-   
+
     const totalRevenue = revenueGeneratingOrders.reduce((acc, order) => acc + order.totalPrice, 0);
     const totalSalesCount = revenueGeneratingOrders.length;
     let totalItemsSold = 0;
 
-    
-    const productSalesMap = {}; 
+
+    const productSalesMap = {};
 
     // Calculate items sold/revenue ONLY from revenue-generating orders
     revenueGeneratingOrders.forEach(order => {
@@ -72,7 +72,7 @@ const AdminReports = () => {
         totalItemsSold += item.qty;
 
         const productId = item.product?._id || item.product;
-        const itemName = item.name || 'Unknown Product'; 
+        const itemName = item.name || 'Unknown Product';
         const itemRevenue = item.qty * item.price;
 
         if (!productSalesMap[productId]) {
@@ -88,25 +88,25 @@ const AdminReports = () => {
       });
     });
 
-  
+
     const productSalesArray = Object.values(productSalesMap).sort((a, b) => b.totalQuantity - a.totalQuantity);
-    
-   
+
+
     const statusCounts = orders.reduce((acc, order) => {
-        const status = order.status || 'Other';
-        acc[status] = (acc[status] || 0) + 1;
-        return acc;
+      const status = order.status || 'Other';
+      acc[status] = (acc[status] || 0) + 1;
+      return acc;
     }, {});
 
 
     return {
-      totalOrderValue: totalOrderValue, 
-      totalRevenue: totalRevenue, 
+      totalOrderValue: totalOrderValue,
+      totalRevenue: totalRevenue,
       totalSalesCount: totalSalesCount,
       totalItemsSold: totalItemsSold,
-      productSalesArray: productSalesArray, 
-      statusCounts: statusCounts, 
-      
+      productSalesArray: productSalesArray,
+      statusCounts: statusCounts,
+
     };
   }, [orders]);
 
@@ -137,33 +137,33 @@ const AdminReports = () => {
   } = reportData;
 
   const currencyFormatter = (value) => `Rs ${value.toLocaleString('en-IN')}`;
-  
+
   // Total Orders Count
   const totalOrdersCount = orders.length;
-  
+
   const metrics = [
-    { 
+    {
       title: "Total Orders Placed",
       value: totalOrdersCount.toLocaleString(),
       description: "All orders count.",
       color: "border-blue-500",
       textColor: "text-blue-600"
     },
-    { 
+    {
       title: "Total Value of Orders Received",
       value: currencyFormatter(totalOrderValue),
       description: "All orders raw value.",
       color: "border-purple-500",
       textColor: "text-purple-600"
     },
-    { 
+    {
       title: "Net Revenue (Delivered/Shipped)",
       value: currencyFormatter(totalRevenue),
       description: "Delivered/Shipped orders final revenue.", // Updated description
       color: "border-red-500",
       textColor: "text-red-600"
     },
-    { 
+    {
       title: "Total Items Sold",
       value: totalItemsSold.toLocaleString(),
       description: "Products sold", // Updated description
@@ -189,35 +189,35 @@ const AdminReports = () => {
       {/* 1. Key Metrics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
         {metrics.map((metric, index) => (
-            <div 
-              key={index} 
-              className={`bg-white p-6 rounded-xl shadow-lg border-b-4 ${metric.color} hover:shadow-xl transition duration-300`}
-            >
-              <p className="text-sm font-medium text-gray-500">{metric.title}</p>
-              <p className={`text-3xl font-bold ${metric.textColor} mt-1`}>{metric.value}</p>
-              <span className="text-xs text-gray-500">{metric.description}</span>
-            </div>
+          <div
+            key={index}
+            className={`bg-white p-6 rounded-xl shadow-lg border-b-4 ${metric.color} hover:shadow-xl transition duration-300`}
+          >
+            <p className="text-sm font-medium text-gray-500">{metric.title}</p>
+            <p className={`text-3xl font-bold ${metric.textColor} mt-1`}>{metric.value}</p>
+            <span className="text-xs text-gray-500">{metric.description}</span>
+          </div>
         ))}
       </div>
 
       {/* 2. Order Status Breakdown */}
       <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
-          <h3 className="text-lg font-semibold mb-3 text-gray-700">Order Status Breakdown (Counts)</h3>
-          <div className="flex flex-wrap gap-4 text-sm">
-            {Object.entries(statusCounts).map(([status, count]) => (
-                // 💡 FIX 2: Added dynamic styling for status cards
-                <div 
-                    key={status} 
-                    className={`p-3 rounded-lg border ${getStatusClasses(status)}`}
-                >
-                    <p className="text-xs font-medium">{status}</p>
-                    <p className="text-xl font-bold">{count}</p>
-                </div>
-            ))}
-            {Object.keys(statusCounts).length === 0 && (
-                <p className="text-gray-500">No status breakdown available.</p>
-            )}
-          </div>
+        <h3 className="text-lg font-semibold mb-3 text-gray-700">Order Status Breakdown (Counts)</h3>
+        <div className="flex flex-wrap gap-4 text-sm">
+          {Object.entries(statusCounts).map(([status, count]) => (
+            // 💡 FIX 2: Added dynamic styling for status cards
+            <div
+              key={status}
+              className={`p-3 rounded-lg border ${getStatusClasses(status)}`}
+            >
+              <p className="text-xs font-medium">{status}</p>
+              <p className="text-xl font-bold">{count}</p>
+            </div>
+          ))}
+          {Object.keys(statusCounts).length === 0 && (
+            <p className="text-gray-500">No status breakdown available.</p>
+          )}
+        </div>
       </div>
 
 

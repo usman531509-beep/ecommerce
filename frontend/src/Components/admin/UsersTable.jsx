@@ -6,19 +6,19 @@ const UsersTable = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const { API_BASE_URL } = useContext(ShopContext);
   const token = localStorage.getItem("auth-token");
 
-  
+
   const fetchUsers = async () => {
     try {
       setLoading(true);
-     
+
       if (!token) {
         throw new Error("Authentication token not found.");
       }
-      
+
       const res = await axios.get(`${API_BASE_URL}/api/auth/allusers`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -26,7 +26,7 @@ const UsersTable = () => {
       setLoading(false);
     } catch (err) {
       console.error("Error fetching users:", err);
-     
+
       setError(err.response?.data?.message || "Failed to fetch users. Check console for details.");
       setLoading(false);
     }
@@ -69,7 +69,7 @@ const UsersTable = () => {
       </h2>
 
       {users.length > 0 ? (
-     
+
         <div className="overflow-x-auto">
           <table className="min-w-full border-collapse text-sm sm:text-base">
             <thead className="bg-red-500 text-white">
@@ -77,7 +77,7 @@ const UsersTable = () => {
                 <th className="p-3 rounded-tl-xl whitespace-nowrap">Name</th>
                 <th className="p-3 whitespace-nowrap">Email</th>
                 <th className="p-3 whitespace-nowrap">Role</th>
-               
+
                 <th className="p-3 hidden sm:table-cell rounded-tr-xl whitespace-nowrap">Joined</th>
               </tr>
             </thead>
@@ -85,7 +85,7 @@ const UsersTable = () => {
               {users.map((user) => (
                 <motion.tr
                   key={user._id}
-                  whileHover={{ backgroundColor: "#fef2f2" }} 
+                  whileHover={{ backgroundColor: "#fef2f2" }}
                   className="border-b last:border-none transition duration-150"
                 >
                   <td className="p-3 font-medium text-gray-800 whitespace-nowrap">{user.name}</td>
@@ -101,7 +101,7 @@ const UsersTable = () => {
                       </span>
                     )}
                   </td>
-                 
+
                   <td className="p-3 text-gray-500 hidden sm:table-cell whitespace-nowrap">
                     {new Date(user.createdAt).toLocaleDateString()}
                   </td>

@@ -70,10 +70,6 @@ const RotatingCards = () => {
     isPaused.current = false;
   };
 
-  const handleMouseEnter = () => {
-    isPaused.current = true;
-  };
-
   return (
     <div
       className="
@@ -87,7 +83,6 @@ const RotatingCards = () => {
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
