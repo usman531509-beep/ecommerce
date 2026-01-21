@@ -9,7 +9,7 @@ const AdminContactManagement = () => {
   const { API_BASE_URL } = useContext(ShopContext);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   // --- Modal States ---
   const [selectedMsg, setSelectedMsg] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,11 +40,11 @@ const AdminContactManagement = () => {
         { status: newStatus },
         { headers: { Authorization: `Bearer ${TOKEN}` } }
       );
-      
-      setMessages(prev => prev.map(msg => 
+
+      setMessages(prev => prev.map(msg =>
         msg._id === id ? { ...msg, status: newStatus } : msg
       ));
-      
+
       // Modal mein bhi status update ho jaye agar khula hai
       if (selectedMsg && selectedMsg._id === id) {
         setSelectedMsg(prev => ({ ...prev, status: newStatus }));
@@ -172,14 +172,14 @@ const AdminContactManagement = () => {
 
             {/* Modal Footer */}
             <div className="bg-gray-50 p-4 flex justify-end gap-3 border-t">
-               {selectedMsg.status === 'Pending' && (
-                  <button onClick={() => updateMessageStatus(selectedMsg._id, 'Reviewed')} className="px-4 py-2 bg-green-500 text-white rounded-lg flex items-center gap-2 text-sm font-bold hover:bg-green-600 transition shadow-md">
-                    <CheckSquare size={16} /> Mark as Reviewed
-                  </button>
-               )}
-               <button onClick={() => deleteMessage(selectedMsg._id)} className="px-4 py-2 bg-[#ff4141] text-white rounded-lg flex items-center gap-2 text-sm font-bold hover:bg-red-700 transition shadow-md">
-                  <Trash2 size={16} /> Delete
-               </button>
+              {selectedMsg.status === 'Pending' && (
+                <button onClick={() => updateMessageStatus(selectedMsg._id, 'Reviewed')} className="px-4 py-2 bg-green-500 text-white rounded-lg flex items-center gap-2 text-sm font-bold hover:bg-green-600 transition shadow-md">
+                  <CheckSquare size={16} /> Mark as Reviewed
+                </button>
+              )}
+              <button onClick={() => deleteMessage(selectedMsg._id)} className="px-4 py-2 bg-[#ff4141] text-white rounded-lg flex items-center gap-2 text-sm font-bold hover:bg-red-700 transition shadow-md">
+                <Trash2 size={16} /> Delete
+              </button>
             </div>
           </div>
         </div>

@@ -15,15 +15,15 @@ const WhatsAppWidget = () => {
         target="_blank"
         rel="noopener noreferrer"
        
-        className="group relative flex items-center justify-center w-20 h-14 bg-[#25D366] text-white rounded-l-2xl shadow-[-5px_5px_15px_rgba(0,0,0,0.1)] transition-all duration-500 transform translate-x-12 hover:translate-x-0 active:scale-95 pl-2"
+        className="group relative flex items-center justify-center w-20 h-14 bg-[#25D366] text-white rounded-l-2xl shadow-[-5px_5px_15px_rgba(0,0,0,0.1)] transition-all duration-500 transform translate-x-11 hover:translate-x-0 active:scale-95 pl-2"
         aria-label="Chat on WhatsApp"
       >
        
         <span className="absolute inset-0 rounded-l-2xl bg-[#25D366] opacity-20 animate-ping group-hover:animate-none"></span>
 
        
-        <div className="relative flex items-center gap-2 transition-transform duration-300 group-hover:-translate-x-1">
-          <FontAwesomeIcon icon={faWhatsapp} className="text-3xl drop-shadow-md" />
+        <div className="relative flex items-center gap-2 transition-transform duration-300 group-hover:translate-x-1">
+          <FontAwesomeIcon icon={faWhatsapp} className="text-3xl drop-shadow-md mr-4" />
          
           <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 text-[10px] font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 uppercase tracking-tighter">
             Chat

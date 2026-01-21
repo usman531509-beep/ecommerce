@@ -1,13 +1,10 @@
-import React, { useState, useEffect, useRef, useContext} from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { X, Send, Sparkles, BotIcon, RotateCcw } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { ShopContext } from "../../Context/ShopContext.jsx";
 
-
-
-
 const ProductBot = () => {
-    const {API_BASE_URL} = useContext(ShopContext);
+  const { API_BASE_URL } = useContext(ShopContext);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     { role: "bot", text: "Hello! ✨ I'm your **Atelier** assistant. Looking for a Ring, Earings, or Bracelets? Ask me anything!" }
@@ -68,14 +65,14 @@ const ProductBot = () => {
               </button>
             </div>
           </div>
-          
+
           {/* Messages */}
           <div ref={scrollRef} className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50/50">
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`p-3 rounded-2xl shadow-sm text-sm max-w-[85%] ${m.role === 'user' ? 'bg-red-600 text-white rounded-tr-none' : 'bg-white text-gray-700 border border-gray-100 rounded-tl-none'}`}>
-                  <div className="prose prose-sm max-w-none prose-p:leading-relaxed">
-                    <ReactMarkdown components={{ strong: ({...props}) => <span className="font-bold text-red-800" {...props} /> }}>
+                  <div className="prose prose-sm max-w-none prose-p:leading-relaxed text-left">
+                    <ReactMarkdown components={{ strong: ({ ...props }) => <span className="font-bold text-red-800" {...props} /> }}>
                       {m.text}
                     </ReactMarkdown>
                   </div>
@@ -94,20 +91,23 @@ const ProductBot = () => {
           </div>
         </div>
       ) : (
-        /* Slide-out Sidebar Button */
-        <button 
+        /* Floating Action Button - Half Hidden Style */
+        <button
           onClick={() => setIsOpen(true)}
-          className="group relative flex items-center justify-center w-20 h-16 bg-gradient-to-br from-red-600 to-red-800 text-white rounded-l-2xl shadow-2xl transition-all duration-500 transform translate-x-12 hover:translate-x-0 active:scale-95 pl-2"
+          className="group relative flex items-center justify-center p-4 pr-10 bg-gradient-to-br from-red-600 to-red-800 text-white rounded-l-2xl shadow-2xl transition-all duration-500 translate-x-[60%] hover:translate-x-0 active:scale-95 border-y border-l border-white/20"
         >
-          <div className="absolute top-2 left-2 flex h-3 w-3"><span className="animate-ping absolute h-full w-full rounded-full bg-green-400 opacity-75"></span><span className="relative h-3 w-3 rounded-full bg-green-500 border border-white"></span></div>
-          <div className="flex items-center gap-2 transition-transform duration-300 group-hover:-translate-x-2">
-            <BotIcon className="w-8 h-8 fill-white/10" />
-            <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 text-xs font-bold opacity-0 group-hover:opacity-100">Chat AI</span>
+          {/* Online Pulse Dot */}
+          <div className="absolute top-2 left-2 flex h-3 w-3">
+             <span className="animate-ping absolute h-full w-full rounded-full bg-green-400 opacity-75"></span>
+             <span className="relative h-3 w-3 rounded-full bg-green-500 border border-white"></span>
           </div>
-          {/* Tooltip */}
-          <span className="absolute right-full mr-4 px-4 py-2 bg-gradient-to-r from-red-900 to-red-700 text-white text-[11px] font-bold rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-500 shadow-xl min-w-max border border-white/10">
-            Need Help! 🎁
-            <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-2.5 h-2.5 bg-red-700 rotate-45"></div>
+
+          <BotIcon className="w-8 h-8 fill-white/10" />
+
+          {/* Tooltip - Only shows on icon hover due to group class on button */}
+          <span className="absolute right-[110%] mr-2 px-3 py-2 bg-gray-900 text-white text-xs font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg whitespace-nowrap pointer-events-none">
+            Need Help? 🎁
+            <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
           </span>
         </button>
       )}
